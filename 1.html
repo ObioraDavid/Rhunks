@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Support | Your Journey Begins Here</title>
+    <style>
+        :root {
+            --primary: #6a7fff;
+            --secondary: #ff7fa7;
+            --accent: #7fffd4;
+            --dark: #2d3748;
+            --light: #f8f9fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    header h1 {
+      color: var(--primary);
+      font-size: 28px;
+      font-weight: 700;
+      position: relative;
+    }
+
+    header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 60px;
+      height: 3px;
+      background: var(--secondary);
+      animation: pulse 2s infinite;
+    }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-icon {
+            margin-right: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 30px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .auth-button {
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .contact-button {
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(106, 127, 255, 0.4);
+}
+
+.contact-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 7px 20px rgba(106, 127, 255, 0.6);
+}
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+textarea.form-input {
+    resize: vertical; /* Allow vertical resizing */
+    min-height: 100px; /* Set a minimum height */
+}
+        
+        .login-button {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .login-button:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .signup-button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(106, 127, 255, 0.4);
+        }
+        
+        .signup-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(106, 127, 255, 0.6);
+        }
+        
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            width: 50%;
+            z-index: 1;
+        }
+        
+        .hero-title {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            animation: fadeInUp 1s ease;
+        }
+        
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: #4a5568;
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(106, 127, 255, 0.4);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 20px rgba(106, 127, 255, 0.6);
+        }
+        
+        .hero-image {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 55%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .element {
+            position: absolute;
+            opacity: 0.8;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .element-1 {
+            width: 60px;
+            height: 60px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .element-2 {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary);
+            border-radius: 8px;
+            top: 60%;
+            left: 15%;
+            animation-delay: 1s;
+            transform: rotate(45deg);
+        }
+        
+        .element-3 {
+            width: 70px;
+            height: 70px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            bottom: 10%;
+            right: 20%;
+            animation-delay: 2s;
+        }
+        
+        .benefits {
+            padding: 100px 0;
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        
+        .cards {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+        
+        .card {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .card.fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .card-text {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background-color: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            position: relative;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #718096;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: var(--primary);
+        }
+        
+        .modal-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            text-align: center;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(106, 127, 255, 0.2);
+        }
+        
+        .form-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .form-button:hover {
+            box-shadow: 0 7px 15px rgba(106, 127, 255, 0.4);
+        }
+        
+        .form-footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .hero-content {
+                width: 100%;
+                text-align: center;
+                padding: 40px 0;
+            }
+            
+            .hero-image {
+                position: relative;
+                width: 100%;
+                top: 0;
+                transform: none;
+                height: 300px;
+                margin-top: 40px;
+            }
+            
+            .cards {
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>RHUNK .</h1>
+            <div class="auth-buttons">
+                <button class="auth-button contact-button" id="contactBtn">Contact Us</button>
+                <button class="auth-button login-button" id="loginBtn">Login</button>
+                <button class="auth-button signup-button" id="signupBtn">Sign Up</button>
+            </div>
+        </header>
+        <!-- Contact Us Modal -->
+<div class="modal-overlay" id="contactModal">
+    <div class="modal">
+        <div class="modal-close" id=
+        "closeContactModal">×</div>
+        <h2 class="modal-title">Contact Us</h2>
+        <form action ="https://formspree.io/f/mqaerojl" method="post"     id="contactForm" >
+            <div class="form-group">
+                <label for="contactName" class="form-label">Your Name</label>
+                <input type="text" id="contactName" class="form-input" placeholder="Enter your name" required>
+            </div>
+           
+        
+            <script>
+                // Get contact modal elements
+const contactBtn = document.getElementById('contactBtn');
+const contactModal = document.getElementById('contactModal');
+const closeContactModal = document.getElementById('closeContactModal');
+const contactForm = document.getElementById('contactForm');
+
+// Open contact modal
+contactBtn.addEventListener('click', function() {
+    contactModal.classList.add('active');
+});
+
+// Close contact modal
+closeContactModal.addEventListener('click', function() {
+    contactModal.classList.remove('active');
+});
+
+// Close modal when clicking outside
+window.addEventListener('click', function(e) {
+    if (e.target === contactModal) {
+        contactModal.classList.remove('active');
+    }
+});
+
+// Handle contact form submission
+contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name = document.getElementById('contactName').value;
+    const email = document.getElementById('contactEmail').value;
+    const message = document.getElementById('contactMessage').value;
+
+    // You can add logic to send the message (e.g., via an API)
+    console.log('Contact form submitted:', { name, email, message });
+
+    // Simple feedback
+    alert('Thank you for contacting us! We will get back to you soon.');
+
+    // Reset form and close modal
+    contactForm.reset();
+    contactModal.classList.remove('active');
+});
+            </script>
+            <div class="form-group">
+                <label for="contactEmail" class="form-label">Email Address</label>
+                <input type="email" id="contactEmail" class="form-input" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="contactMessage" class="form-label">Message</label>
+                <textarea id="contactMessage" class="form-input" placeholder="Enter your message" rows="5" required></textarea>
+            </div>
+            <button type="submit" class="form-button">Send Message</button>
+        </form>
+    </div>
+</div>
+        
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Your Mental Health <br>Is Priority</h1>
+                <p class="hero-subtitle">Taking care of your mental wellbeing is just as important as physical health. Begin your journey to a healthier mind today with support that understands you.</p>
+                <a href="mental.html" class="cta-button">Anonymous Chat</a>
+            </div>
+            
+            <div class="hero-image">
+                <svg width="500" height="400" viewBox="0 0 500 400">
+                    <defs>
+                        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#6a7fff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#ff7fa7;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    
+                    <!-- Brain outline -->
+                    <path d="M250,80 C350,80 400,150 400,220 C400,320 330,350 250,350 C170,350 100,320 100,220 C100,150 150,80 250,80 Z" fill="none" stroke="url(#grad1)" stroke-width="8" stroke-linecap="round" />
+                    
+                    <!-- Brain connections -->
+                    <circle cx="200" cy="180" r="10" fill="#7fffd4">
+                        <animate attributeName="r" values="10;15;10" dur="4s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="300" cy="180" r="10" fill="#7fffd4">
+                        <animate attributeName="r" values="10;15;10" dur="3s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="250" cy="250" r="12" fill="#7fffd4">
+                        <animate attributeName="r" values="12;18;12" dur="5s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="180" cy="220" r="8" fill="#7fffd4">
+                        <animate attributeName="r" values="8;14;8" dur="4.5s" repeatCount="indefinite" />
+                    </circle>
+                    <circle cx="320" cy="220" r="8" fill="#7fffd4">
+                        <animate attributeName="r" values="8;14;8" dur="3.5s" repeatCount="indefinite" />
+                    </circle>
+                    
+                    <!-- Neuron connections -->
+                    <line x1="200" y1="180" x2="250" y2="250" stroke="#6a7fff" stroke-width="3">
+                        <animate attributeName="stroke-width" values="3;5;3" dur="4s" repeatCount="indefinite" />
+                    </line>
+                    <line x1="300" y1="180" x2="250" y2="250" stroke="#6a7fff" stroke-width="3">
+                        <animate attributeName="stroke-width" values="3;5;3" dur="3.5s" repeatCount="indefinite" />
+                    </line>
+                    <line x1="180" y1="220" x2="250" y2="250" stroke="#6a7fff" stroke-width="3">
+                        <animate attributeName="stroke-width" values="3;5;3" dur="5s" repeatCount="indefinite" />
+                    </line>
+                    <line x1="320" y1="220" x2="250" y2="250" stroke="#6a7fff" stroke-width="3">
+                        <animate attributeName="stroke-width" values="3;5;3" dur="4.5s" repeatCount="indefinite" />
+                    </line>
+                    
+                    <!-- Heart within brain -->
+                    <path d="M250,240 C270,220 300,230 300,250 C300,270 270,290 250,300 C230,290 200,270 200,250 C200,230 230,220 250,240 Z" fill="#ff7fa7">
+                        <animate attributeName="d" values="M250,240 C270,220 300,230 300,250 C300,270 270,290 250,300 C230,290 200,270 200,250 C200,230 230,220 250,240 Z;M250,235 C275,210 310,225 310,250 C310,275 275,295 250,305 C225,295 190,275 190,250 C190,225 225,210 250,235 Z;M250,240 C270,220 300,230 300,250 C300,270 270,290 250,300 C230,290 200,270 200,250 C200,230 230,220 250,240 Z" dur="2s" repeatCount="indefinite" />
+                    </path>
+                </svg>
+            </div>
+            
+            <div class="floating-elements">
+                <div class="element element-1"></div>
+                <div class="element element-2"></div>
+                <div class="element element-3"></div>
+            </div>
+        </section>
+        
+        <section class="benefits">
+            <h2 class="section-title">Why Mental Health Matters</h2>
+            
+            <div class="cards">
+                <div class="card" id="card1">
+                    <div class="card-icon">🧘</div>
+                    <h3 class="card-title">Better Self-awareness</h3>
+                    <p class="card-text">Understanding your emotions and thought patterns helps you respond to life's challenges in healthier ways.</p>
+                </div>
+                
+                <div class="card" id="card2">
+                    <div class="card-icon">🤝</div>
+                    <h3 class="card-title">Stronger Relationships</h3>
+                    <p class="card-text">Good mental health fosters meaningful connections and improves how you interact with loved ones.</p>
+                </div>
+                
+                <div class="card" id="card3">
+                    <div class="card-icon">⚡</div>
+                    <h3 class="card-title">Increased Productivity</h3>
+                    <p class="card-text">A healthy mind enhances focus, creativity, and your ability to manage stress effectively.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Login Modal -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <div class="modal-close" id="closeLoginModal">×</div>
+            <h2 class="modal-title">Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail" class="form-label">Email Address</label>
+                    <input type="email" id="loginEmail" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword" class="form-label">Password</label>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="form-button">Login</button>
+                <div class="form-footer">
+                    Don't have an account? <a href="#" id="switchToSignup">Sign Up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Sign Up Modal -->
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal">
+            <div class="modal-close" id="closeSignupModal">×</div>
+            <h2 class="modal-title">Create Account</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName" class="form-label">Full Name</label>
+                    <input type="text" id="signupName" class="form-input" placeholder="Enter your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail" class="form-label">Email Address</label>
+                    <input type="email" id="signupEmail" class="form-input" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword" class="form-label">Password</label>
+                    <input type="password" id="signupPassword" class="form-input" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" class="form-input" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="form-button">Sign Up</button>
+                <div class="form-footer">
+                    Already have an account? <a href="#" id="switchToLogin">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Animation for cards on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        // Add a slight delay for each card
+                        const index = Array.from(cards).indexOf(entry.target);
+                        entry.target.style.transitionDelay = `${index * 0.2}s`;
+                    }
+                });
+            }, { threshold: 0.2 });
+            
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Modal functionality
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const loginModal = document.getElementById('loginModal');
+            const signupModal = document.getElementById('signupModal');
+            const closeLoginModal = document.getElementById('closeLoginModal');
+            const closeSignupModal = document.getElementById('closeSignupModal');
+            const switchToSignup = document.getElementById('switchToSignup');
+            const switchToLogin = document.getElementById('switchToLogin');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            
+            // Open login modal
+            loginBtn.addEventListener('click', function() {
+                loginModal.classList.add('active');
+            });
+            
+            // Open signup modal
+            signupBtn.addEventListener('click', function() {
+                signupModal.classList.add('active');
+            });
+            
+            // Close login modal
+            closeLoginModal.addEventListener('click', function() {
+                loginModal.classList.remove('active');
+            });
+            
+            // Close signup modal
+            closeSignupModal.addEventListener('click', function() {
+                signupModal.classList.remove('active');
+            });
+            
+            // Switch to signup modal
+            switchToSignup.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginModal.classList.remove('active');
+                setTimeout(() => {
+                    signupModal.classList.add('active');
+                }, 300);
+            });
+            
+            // Switch to login modal
+            switchToLogin.addEventListener('click', function(e) {
+                e.preventDefault();
+                signupModal.classList.remove('active');
+                setTimeout(() => {
+                    loginModal.classList.add('active');
+                }, 300);
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === loginModal) {
+                    loginModal.classList.remove('active');
+                }
+                if (e.target === signupModal) {
+                    signupModal.classList.remove('active');
+                }
+            });
+            
+          // Handle login form submission
+loginForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    // You can add login logic here
+    console.log('Login attempt with:', email, password);
+    
+    // Simple validation feedback
+    alert('Login successful! Redirecting to dashboard...');
+    
+    // Reset form and close modal
+    loginForm.reset();
+    loginModal.classList.remove('active');
+    
+    // Redirect to 1.html
+    window.location.href = "Dashboard.html";
+});
+            
+            // Handle signup form submission
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const name = document.getElementById('signupName').value;
+                const email = document.getElementById('signupEmail').value;
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('signupConfirmPassword').value;
+                
+                // Simple password validation
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match!');
+                    return;
+                }
+                
+                // You can add signup logic here
+                console.log('Signup attempt with:', name, email, password);
+                
+                // Simple validation feedback
+                alert('Account created successfully! This is a placeholder for actual registration.');
+                
+                // Reset form and close modal
+                signupForm.reset();
+                signupModal.classList.remove('active');
+            });
+        });
+        
+        // Particles animation for background
+        class Particle {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.ctx = canvas.getContext('2d');
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 5 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = this.getRandomColor();
+            }
+            
+            getRandomColor() {
+                const colors = ['rgba(106, 127, 255, 0.5)', 'rgba(127, 255, 212, 0.5)', 'rgba(255, 127, 167, 0.5)'];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                
+                if (this.size > 0.2) this.size -= 0.05;
+                
+                if (this.x > this.canvas.width || this.x < 0) {
+                    this.speedX = -this.speedX;
+                }
+                
+                if (this.y > this.canvas.height || this.y < 0) {
+                    this.speedY = -this.speedY;
+                }
+            }
+            
+            draw() {
+                this.ctx.fillStyle = this.color;
+                this.ctx.beginPath();
+                this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+        }
+        
+        // Create particles canvas
+        const particlesCanvas = document.createElement('canvas');
+        particlesCanvas.width = window.innerWidth;
+        particlesCanvas.height = window.innerHeight;
+        particlesCanvas.style.position = 'fixed';
+        particlesCanvas.style.top = '0';
+        particlesCanvas.style.left = '0';
+        particlesCanvas.style.zIndex = '-1';
+        particlesCanvas.style.opacity = '0.5';
+        document.body.appendChild(particlesCanvas);
+        
+        const ctx = particlesCanvas.getContext('2d');
+        const particles = [];
+        
+        for (let i = 0; i < 50; i++) {
+            particles.push(new Particle(particlesCanvas));
+        }
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            
+            requestAnimationFrame(animateParticles);
+        }
+        
+        animateParticles();
+        
+        window.addEventListener('resize', function() {
+            particlesCanvas.width = window.innerWidth;
+            particlesCanvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

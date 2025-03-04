@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Assistant Chatbot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #6a7fff;
+            --secondary: #ff7fa7;
+            --accent: #7fffd4;
+            --dark: #2d3748;
+            --light: #f8f9fa;
+            --dark: #2d3436;
+            --bot-bg: #e9f3ff;
+            --user-bg: #f1f2f6;
+            --gradient-start: #6c5ce7;
+            --gradient-end: #00cec9;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --info: #74b9ff;
+            --danger: #ff7675;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f6f8fe 0%, #e9f3ff 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .chat-container {
+            max-width: 900px;
+            width: 90%;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+            border-radius: 20px;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+            background-color: white;
+            overflow: hidden;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+        
+        .chat-header::before {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+            z-index: -1;
+        }
+        
+        .chat-header::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            bottom: -30px;
+            left: 30px;
+            z-index: -1;
+        }
+        
+        .chat-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: fadeInDown 0.8s;
+        }
+        
+        .chat-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s;
+        }
+        
+        .disclaimer {
+            font-size: 0.75rem;
+            background-color: rgba(255,255,255,0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: inline-block;
+            animation: pulseOpacity 2s infinite;
+        }
+        
+        @keyframes pulseOpacity {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(108, 92, 231, 0.03) 0%, transparent 20%),
+                radial-gradient(circle at 90% 50%, rgba(0, 206, 201, 0.03) 0%, transparent 25%),
+                radial-gradient(circle at 40% 80%, rgba(253, 203, 110, 0.03) 0%, transparent 30%);
+            position: relative;
+            scroll-behavior: smooth;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
+        }
+        
+        .message {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 18px;
+            position: relative;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transform-origin: left center;
+        }
+        
+        .bot-message {
+            background-color: var(--bot-bg);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+            animation: fadeInLeft 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .user-message {
+            background-color: var(--user-bg);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+            animation: fadeInRight 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        @keyframes fadeInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .chat-input {
+            display: flex;
+            padding: 20px 30px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            background-color: white;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+            position: relative;
+            z-index: 2;
+            animation: slideInUp 0.8s;
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background-color: var(--light);
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .chat-input input:focus {
+            box-shadow: 0 2px 20px rgba(108, 92, 231, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .chat-input button {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-left: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chat-input button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .chat-input button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(108, 92, 231, 0.4);
+        }
+        
+        .chat-input button:hover::before {
+            opacity: 1;
+        }
+        
+        .chat-input button svg {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .chat-input button:hover svg {
+            transform: rotate(10deg) scale(1.1);
+        }
+        
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            animation: fadeInUp 0.5s;
+        }
+        
+        .option-button {
+            background-color: white;
+            border: 1px solid var(--primary-light);
+            color: var(--primary);
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .option-button:hover {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.2);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            height: auto;
+            animation: fadeIn 0.3s;
+        }
+        
+        .typing-dot {
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+            background: linear-gradient(135deg, var(--primary), var(--gradient-end));
+            animation: typingBounce 1.4s infinite;
+            opacity: 0.7;
+        }
+        
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Styling for the results */
+        .result-message {
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-message::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            top: -50px;
+            right: -50px;
+        }
+        
+        .anxiety-result {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            border-left: 5px solid #0984e3;
+        }
+        
+        .depression-result {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            color: white;
+            border-left: 5px solid #6c5ce7;
+        }
+        
+        .stress-result {
+            background: linear-gradient(135deg, #81ecec, #00cec9);
+            color: white;
+            border-left: 5px solid #00cec9;
+        }
+        
+        .burnout-result {
+            background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+            color: var(--dark);
+            border-left: 5px solid #fdcb6e;
+        }
+        
+        .inconclusive-result {
+            background: linear-gradient(135deg, #dfe6e9, #b2bec3);
+            color: var(--dark);
+            border-left: 5px solid #b2bec3;
+        }
+        
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .result-title::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 3px;
+            background-color: rgba(255,255,255,0.3);
+            bottom: -5px;
+            left: 0;
+            border-radius: 2px;
+        }
+        
+        .restart-button {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            align-self: center;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .restart-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .chat-container {
+                width: 95%;
+                height: calc(100vh - 20px);
+                margin: 10px auto;
+            }
+            
+            .chat-header {
+                padding: 15px 20px;
+            }
+            
+            .chat-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .chat-messages {
+                padding: 20px;
+            }
+            
+            .chat-input {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h1>RHUNK Mental Health Assistant</h1>
+            <p>Chat about how you're feeling</p>
+            <div class="disclaimer">
+                This is for informational purposes only and not a substitute for professional mental health advice.
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be added here dynamically -->
+        </div>
+        
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
+            <button id="send-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            
+            // Chat state
+            const chatState = {
+                currentStage: 'greeting',
+                symptoms: {
+                    // Mood & emotions
+                    sadness: false,
+                    sadnessSeverity: 0,
+                    anxiety: false,
+                    anxietySeverity: 0,
+                    irritability: false,
+                    anhedonia: false, // lack of pleasure in activities
+                    mood_swings: false,
+                    
+                    // Physical
+                    sleep_issues: false,
+                    fatigue: false,
+                    appetite_changes: false,
+                    
+                    // Cognitive
+                    concentration: false,
+                    negative_thoughts: false,
+                    self_esteem: false,
+                    overthinking: false,
+                    
+                    // Behavioral
+                    isolation: false,
+                    avoidance: false,
+                    procrastination: false,
+                    
+                    // Contextual
+                    recent_loss: false,
+                    work_stress: false,
+                    duration: 0,
+                    impacts_life: false
+                },
+                askedSymptoms: [],
+                pendingQuestion: null
+            };
+            
+            // Questions to ask
+            const questions = [
+                // Emotional symptoms
+                { id: 'sadness', text: 'Have you been feeling sad, down, or depressed recently?', options: ['Yes', 'No'] },
+                { id: 'sadnessSeverity', text: 'How would you rate your sadness or low mood?', dependsOn: 'sadness', options: ['Mild', 'Moderate', 'Severe', 'Very severe'] },
+                { id: 'anxiety', text: 'Do you experience worry, nervousness, or anxiety?', options: ['Yes', 'No'] },
+                { id: 'anxietySeverity', text: 'How would you rate your anxiety or worry?', dependsOn: 'anxiety', options: ['Mild', 'Moderate', 'Severe', 'Very severe'] },
+                { id: 'irritability', text: 'Do you find yourself feeling irritable or agitated easily?', options: ['Yes', 'No'] },
+                { id: 'anhedonia', text: 'Have you lost interest or pleasure in activities you used to enjoy?', options: ['Yes', 'No'] },
+                { id: 'mood_swings', text: 'Do you experience significant mood swings?', options: ['Yes', 'No'] },
+                
+                // Physical symptoms
+                { id: 'sleep_issues', text: 'Are you having trouble sleeping or sleeping too much?', options: ['Yes', 'No'] },
+                { id: 'fatigue', text: 'Do you feel tired or lack energy most days?', options: ['Yes', 'No'] },
+                { id: 'appetite_changes', text: 'Have you noticed changes in your appetite or weight?', options: ['Yes', 'No'] },
+                
+                // Cognitive symptoms
+                { id: 'concentration', text: 'Do you have trouble concentrating or making decisions?', options: ['Yes', 'No'] },
+                { id: 'negative_thoughts', text: 'Do you experience negative or self-critical thoughts?', options: ['Yes', 'No'] },
+                { id: 'self_esteem', text: 'Do you struggle with low self-esteem or feelings of worthlessness?', options: ['Yes', 'No'] },
+                { id: 'overthinking', text: 'Do you find yourself overthinking or ruminating on problems?', options: ['Yes', 'No'] },
+                
+                // Behavioral symptoms
+                { id: 'isolation', text: 'Have you been withdrawing from social activities or isolating yourself?', options: ['Yes', 'No'] },
+                { id: 'avoidance', text: 'Do you find yourself avoiding certain situations due to distress?', options: ['Yes', 'No'] },
+                { id: 'procrastination', text: 'Do you struggle with procrastination or getting things done?', options: ['Yes', 'No'] },
+                
+                // Contextual factors
+                { id: 'recent_loss', text: 'Have you experienced any significant loss or life changes recently?', options: ['Yes', 'No'] },
+                { id: 'work_stress', text: 'Are you experiencing high levels of stress at work or school?', options: ['Yes', 'No'] },
+                { id: 'duration', text: 'How long have you been experiencing these feelings?', options: ['Less than 2 weeks', '2-4 weeks', '1-3 months', 'More than 3 months'] },
+                { id: 'impacts_life', text: 'Are these symptoms significantly impacting your daily life or functioning?', options: ['Yes', 'No'] }
+            ];
+            
+            // Initial greeting with animation delays
+            setTimeout(() => {
+                addBotMessage("Hello! I'm your mental health assistant. I can help you explore what you might be experiencing based on your symptoms.");
+                
+                setTimeout(() => {
+                    addBotMessage("Remember, this is just for informational purposes and doesn't replace professional mental health advice. Let's start by checking how you've been feeling.");
+                    
+                    setTimeout(() => {
+                        askNextQuestion();
+                    }, 1200);
+                }, 1500);
+            }, 800);
+            
+            // Event listeners
+            sendButton.addEventListener('click', handleUserInput);
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleUserInput();
+                }
+            });
+            
+            function handleUserInput() {
+                const message = userInput.value.trim();
+                if (message === '') return;
+                
+                addUserMessage(message);
+                userInput.value = '';
+                
+                // Process user input based on current state
+                processUserInput(message);
+            }
+            
+            function processUserInput(message) {
+                if (chatState.currentStage === 'questioning') {
+                    const pendingQuestion = chatState.pendingQuestion;
+                    
+                    // Handle based on the current question
+                    if (!pendingQuestion) {
+                        // Just continue conversation if no pending question
+                        setTimeout(() => {
+                            askNextQuestion();
+                        }, 1000);
+                        return;
+                    }
+                    
+                    const lowercaseMsg = message.toLowerCase();
+                    
+                    // Process yes/no questions
+                    if (pendingQuestion.options.includes('Yes') && pendingQuestion.options.includes('No')) {
+                        if (lowercaseMsg.includes('yes') || lowercaseMsg === 'y' || lowercaseMsg.includes('yeah') || lowercaseMsg.includes('sure')) {
+                            chatState.symptoms[pendingQuestion.id] = true;
+                        } else if (lowercaseMsg.includes('no') || lowercaseMsg === 'n' || lowercaseMsg.includes('nope') || lowercaseMsg.includes('nah')) {
+                            chatState.symptoms[pendingQuestion.id] = false;
+                        } else {
+                            // Handle unclear responses
+                            setTimeout(() => {
+                                addBotMessage("I'm not sure if that's a yes or no. Please try again.");
+                                displayOptions(pendingQuestion.options);
+                                return;
+                            }, 800);
+                            return;
+                        }
+                    }
+                    // Process severity questions
+                    else if (pendingQuestion.id === 'sadnessSeverity' || pendingQuestion.id === 'anxietySeverity') {
+                        if (lowercaseMsg.includes('mild') || lowercaseMsg.includes('slight')) {
+                            chatState.symptoms[pendingQuestion.id] = 1;
+                        } else if (lowercaseMsg.includes('moderate')) {
+                            chatState.symptoms[pendingQuestion.id] = 2;
+                        } else if (lowercaseMsg.includes('severe')) {
+                            chatState.symptoms[pendingQuestion.id] = 3;
+                        } else if (lowercaseMsg.includes('very severe') || lowercaseMsg.includes('extreme')) {
+                            chatState.symptoms[pendingQuestion.id] = 4;
+                        } else {
+                            // Default to moderate if unclear
+                            chatState.symptoms[pendingQuestion.id] = 2;
+                        }
+                    }
+                    // Process duration question
+                    else if (pendingQuestion.id === 'duration') {
+                        if (lowercaseMsg.includes('less than 2') || lowercaseMsg.includes('few days')) {
+                            chatState.symptoms.duration = 1;
+                        } else if (lowercaseMsg.includes('2-4') || lowercaseMsg.includes('couple of weeks')) {
+                            chatState.symptoms.duration = 2;
+                        } else if (lowercaseMsg.includes('1-3 months')) {
+                            chatState.symptoms.duration = 3;
+                        } else if (lowercaseMsg.includes('more than 3') || lowercaseMsg.includes('long time')) {
+                            chatState.symptoms.duration = 4;
+                        } else {
+                            // Default if unclear
+                            chatState.symptoms.duration = 2;
+                        }
+                    }
+                    
+                    // Mark this question as asked
+                    chatState.askedSymptoms.push(pendingQuestion.id);
+                    chatState.pendingQuestion = null;
+                    
+                    // Wait a moment then ask next question or show results
+                    setTimeout(() => {
+                        askNextQuestion();
+                    }, 1000);
+                } else if (chatState.currentStage === 'completed') {
+                    // If chat is completed and user wants to restart
+                    const lowercaseMsg = message.toLowerCase();
+                    if (lowercaseMsg.includes('restart') || lowercaseMsg.includes('start over') || 
+                        lowercaseMsg.includes('again') || lowercaseMsg.includes('new') || 
+                        lowercaseMsg.includes('yes')) {
+                        
+                        resetChat();
+                        setTimeout(() => {
+                            addBotMessage("Let's start again with a new assessment.");
+                            setTimeout(() => {
+                                askNextQuestion();
+                            }, 1000);
+                        }, 1000);
+                    } else {
+                        setTimeout(() => {
+                            addBotMessage("If you have any other questions or want to start a new assessment, just let me know!");
+                        }, 1000);
+                    }
+                }
+            }
+            
+            function askNextQuestion() {
+                // Show typing indicator for more natural feel
+                showTypingIndicator();
+                
+                // Find next unasked question
+                const nextQuestion = questions.find(q => {
+                    // Skip questions that depend on conditions that weren't met
+                    if (q.id === 'sadnessSeverity' && !chatState.symptoms.sadness) {
+                        return false;
+                    }
+                    
+                    if (q.id === 'anxietySeverity' && !chatState.symptoms.anxiety) {
+                        return false;
+                    }
+                    
+                    return !chatState.askedSymptoms.includes(q.id);
+                });
+                
+                if (nextQuestion) {
+                    // Set the current stage and pending question
+                    chatState.currentStage = 'questioning';
+                    chatState.pendingQuestion = nextQuestion;
+                    
+                    // Wait a moment to remove typing indicator and ask question
+                    setTimeout(() => {
+                        removeTypingIndicator();
+                        addBotMessage(nextQuestion.text);
+                        displayOptions(nextQuestion.options);
+                    }, 1500);
+                } else {
+                    // All questions asked, show results
+                    setTimeout(() => {
+                        removeTypingIndicator();
+                        showResults();
+                    }, 2000);
+                }
+            }
+            
+            function showResults() {
+                chatState.currentStage = 'completed';
+                
+                // Calculate scores for different conditions
+                let depressionScore = 0;
+                let anxietyScore = 0;
+                let burnoutScore = 0;
+                let stressScore = 0;
+                
+                // Depression symptoms
+                if (chatState.symptoms.sadness) depressionScore += chatState.symptoms.sadnessSeverity || 2;
+                if (chatState.symptoms.anhedonia) depressionScore += 3;
+                if (chatState.symptoms.sleep_issues) depressionScore += 2;
+                if (chatState.symptoms.fatigue) depressionScore += 2;
+                if (chatState.symptoms.appetite_changes) depressionScore += 2;
+                if (chatState.symptoms.concentration) depressionScore += 1;
+                if (chatState.symptoms.negative_thoughts) depressionScore += 1;
+                if (chatState.symptoms.self_esteem) depressionScore += 3;
+                if (chatState.symptoms.isolation) depressionScore += 2;
+                
+                // Anxiety symptoms
+                if (chatState.symptoms.anxiety) anxietyScore += chatState.symptoms.anxietySeverity || 2;
+                if (chatState.symptoms.overthinking) anxietyScore += 3;
+                if (chatState.symptoms.avoidance) anxietyScore += 3;
+                if (chatState.symptoms.sleep_issues) anxietyScore += 1;
+                if (chatState.symptoms.concentration) anxietyScore += 1;
+                if (chatState.symptoms.negative_thoughts) anxietyScore += 1;
+                
+               
+                // Burnout symptoms
+                if (chatState.symptoms.fatigue) burnoutScore += 3;
+                if (chatState.symptoms.anhedonia) burnoutScore += 2;
+                if (chatState.symptoms.concentration) burnoutScore += 2;
+                if (chatState.symptoms.work_stress) burnoutScore += 3;
+                if (chatState.symptoms.procrastination) burnoutScore += 2;
+                if (chatState.symptoms.irritability) burnoutScore += 1;
+                
+                // Stress symptoms
+                if (chatState.symptoms.irritability) stressScore += 2;
+                if (chatState.symptoms.sleep_issues) stressScore += 1;
+                if (chatState.symptoms.fatigue) stressScore += 1;
+                if (chatState.symptoms.concentration) stressScore += 1;
+                if (chatState.symptoms.work_stress) stressScore += 3;
+                if (chatState.symptoms.overthinking) stressScore += 2;
+                if (chatState.symptoms.mood_swings) stressScore += 1;
+                
+                // Duration factor impacts scores
+                const durationFactor = chatState.symptoms.duration || 2;
+                if (durationFactor >= 3) {
+                    depressionScore *= 1.3;
+                    anxietyScore *= 1.3;
+                    burnoutScore *= 1.3;
+                }
+                
+                // Impacts life factor
+                if (chatState.symptoms.impacts_life) {
+                    depressionScore *= 1.2;
+                    anxietyScore *= 1.2;
+                    burnoutScore *= 1.2;
+                    stressScore *= 1.2;
+                }
+                
+                // Recent loss impacts depression more
+                if (chatState.symptoms.recent_loss) {
+                    depressionScore *= 1.3;
+                }
+                
+                // Summarize reported symptoms
+                let reportedSymptoms = [];
+                
+                if (chatState.symptoms.sadness) {
+                    const severityText = ['', 'mild', 'moderate', 'severe', 'very severe'][chatState.symptoms.sadnessSeverity || 2];
+                    reportedSymptoms.push(`${severityText} sadness`);
+                }
+                
+                if (chatState.symptoms.anxiety) {
+                    const severityText = ['', 'mild', 'moderate', 'severe', 'very severe'][chatState.symptoms.anxietySeverity || 2];
+                    reportedSymptoms.push(`${severityText} anxiety`);
+                }
+                
+                if (chatState.symptoms.irritability) reportedSymptoms.push("irritability");
+                if (chatState.symptoms.anhedonia) reportedSymptoms.push("loss of interest in activities");
+                if (chatState.symptoms.mood_swings) reportedSymptoms.push("mood swings");
+                if (chatState.symptoms.sleep_issues) reportedSymptoms.push("sleep issues");
+                if (chatState.symptoms.fatigue) reportedSymptoms.push("fatigue");
+                if (chatState.symptoms.appetite_changes) reportedSymptoms.push("changes in appetite");
+                if (chatState.symptoms.concentration) reportedSymptoms.push("difficulty concentrating");
+                if (chatState.symptoms.negative_thoughts) reportedSymptoms.push("negative thoughts");
+                if (chatState.symptoms.self_esteem) reportedSymptoms.push("low self-esteem");
+                if (chatState.symptoms.overthinking) reportedSymptoms.push("overthinking");
+                if (chatState.symptoms.isolation) reportedSymptoms.push("social withdrawal");
+                if (chatState.symptoms.avoidance) reportedSymptoms.push("avoidance behaviors");
+                if (chatState.symptoms.procrastination) reportedSymptoms.push("procrastination");
+                if (chatState.symptoms.recent_loss) reportedSymptoms.push("recent loss or life change");
+                if (chatState.symptoms.work_stress) reportedSymptoms.push("work/school stress");
+                
+                const durationText = ['', 'short-term (< 2 weeks)', 'recent (2-4 weeks)', 'medium-term (1-3 months)', 'long-term (> 3 months)'][chatState.symptoms.duration || 1];
+                
+                const symptomsText = reportedSymptoms.length > 0 
+                    ? "Based on the symptoms you reported: " + reportedSymptoms.join(", ") + " for a " + durationText + " duration."
+                    : "Based on the limited symptoms you reported:";
+                
+                addBotMessage(symptomsText);
+                
+                // Determine result based on scores
+                let resultMessage = '';
+                
+                setTimeout(() => {
+                    if (reportedSymptoms.length < 3) {
+                        resultMessage = `
+                            <div class="result-message inconclusive-result">
+                                <p class="result-title">Not enough symptoms to determine a pattern</p>
+                                <p>You haven't reported enough symptoms for me to suggest a likely condition. If you're concerned about your mental health, consider speaking with a mental health professional for a proper evaluation.</p>
+                            </div>
+                        `;
+                    } else if (depressionScore > anxietyScore && depressionScore > burnoutScore && depressionScore > stressScore) {
+                        resultMessage = `
+                            <div class="result-message depression-result">
+                                <p class="result-title">Your symptoms may indicate depression</p>
+                                <p>The symptoms you've described show patterns consistent with depression, particularly your ${chatState.symptoms.sadness ? 'feelings of sadness, ' : ''}${chatState.symptoms.anhedonia ? 'loss of interest in activities, ' : ''}${chatState.symptoms.self_esteem ? 'feelings of low self-worth, ' : ''}and ${chatState.symptoms.fatigue ? 'persistent fatigue.' : 'other symptoms.'}</p>
+                                <p><strong>What might help:</strong> Consider speaking with a mental health professional. In the meantime, regular physical activity, maintaining social connections, and establishing daily routines may help. Self-care practices and mindfulness can also be beneficial.</p>
+                            </div>
+                        `;
+                    } else if (anxietyScore > depressionScore && anxietyScore > burnoutScore && anxietyScore > stressScore) {
+                        resultMessage = `
+                            <div class="result-message anxiety-result">
+                                <p class="result-title">Your symptoms suggest an anxiety condition</p>
+                                <p>Based on your reported symptoms, especially ${chatState.symptoms.anxiety ? 'feelings of worry or nervousness, ' : ''}${chatState.symptoms.overthinking ? 'overthinking, ' : ''}${chatState.symptoms.avoidance ? 'avoidance behaviors, ' : ''}and other symptoms, your experience appears consistent with an anxiety condition.</p>
+                                <p><strong>What might help:</strong> Consider consulting a mental health professional for proper evaluation and treatment options. Deep breathing exercises, physical activity, limiting caffeine, and mindfulness practices may help manage symptoms. Cognitive-behavioral techniques can also be effective for addressing anxiety.</p>
+                            </div>
+                        `;
+                    } else if (burnoutScore > depressionScore && burnoutScore > anxietyScore && burnoutScore > stressScore) {
+                        resultMessage = `
+                            <div class="result-message burnout-result">
+                                <p class="result-title">Your symptoms suggest burnout</p>
+                                <p>The pattern of symptoms you're experiencing, particularly ${chatState.symptoms.fatigue ? 'persistent fatigue, ' : ''}${chatState.symptoms.anhedonia ? 'reduced interest in activities, ' : ''}${chatState.symptoms.work_stress ? 'work-related stress, ' : ''}and ${chatState.symptoms.concentration ? 'difficulty concentrating' : 'other symptoms'}, suggests burnout.</p>
+                                <p><strong>What might help:</strong> Consider setting boundaries between work and personal life, taking regular breaks, and practicing self-care. Evaluate what aspects of your life may need adjustment, and consider speaking with a mental health professional for personalized guidance.</p>
+                            </div>
+                        `;
+                    } else if (stressScore > depressionScore && stressScore > anxietyScore && stressScore > burnoutScore) {
+                        resultMessage = `
+                            <div class="result-message stress-result">
+                                <p class="result-title">Your symptoms indicate high stress levels</p>
+                                <p>Based on your symptoms, particularly ${chatState.symptoms.irritability ? 'irritability, ' : ''}${chatState.symptoms.mood_swings ? 'mood swings, ' : ''}${chatState.symptoms.sleep_issues ? 'sleep disturbances, ' : ''}and ${chatState.symptoms.overthinking ? 'overthinking' : 'other stress indicators'}, your experience is consistent with high stress levels.</p>
+                                <p><strong>What might help:</strong> Consider stress management techniques such as regular exercise, mindfulness meditation, prioritizing tasks, and ensuring adequate rest. Identify and address sources of stress when possible, and consider seeking support from a mental health professional if stress persists.</p>
+                            </div>
+                        `;
+                    } else {
+                        // Mixed symptoms
+                        resultMessage = `
+                            <div class="result-message inconclusive-result">
+                                <p class="result-title">Mixed symptoms detected</p>
+                                <p>Your symptoms show a mixed pattern that could be consistent with several different conditions. The combination of ${reportedSymptoms.slice(0, 3).join(", ")} and other symptoms suggests you may be experiencing a combination of factors.</p>
+                                <p><strong>What might help:</strong> Consider consulting with a mental health professional who can provide a comprehensive assessment and personalized guidance based on your unique situation.</p>
+                            </div>
+                        `;
+                    }
+                    
+                    chatMessages.innerHTML += resultMessage;
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    setTimeout(() => {
+                        addBotMessage("Remember, this assessment is informational only and not a diagnosis. Would you like to start over with a new assessment?");
+                        
+                        const optionsContainer = document.createElement('div');
+                        optionsContainer.className = 'options-container';
+                        
+                        const restartButton = document.createElement('button');
+                        restartButton.className = 'restart-button';
+                        restartButton.textContent = 'Start New Assessment';
+                        restartButton.addEventListener('click', function() {
+                            resetChat();
+                            addBotMessage("Let's start again with a new assessment.");
+                            setTimeout(() => {
+                                askNextQuestion();
+                            }, 800);
+                        });
+                        
+                        optionsContainer.appendChild(restartButton);
+                        chatMessages.appendChild(optionsContainer);
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, 1000);
+                }, 1500);
+            }
+            
+            function resetChat() {
+                // Reset the chat state
+                chatState.currentStage = 'greeting';
+                chatState.askedSymptoms = [];
+                chatState.pendingQuestion = null;
+                
+                // Reset all symptoms
+                for (let symptom in chatState.symptoms) {
+                    if (typeof chatState.symptoms[symptom] === 'boolean') {
+                        chatState.symptoms[symptom] = false;
+                    } else {
+                        chatState.symptoms[symptom] = 0;
+                    }
+                }
+                
+                // Clear chat messages, keeping only the first two intro messages
+                const messages = chatMessages.querySelectorAll('.message');
+                for (let i = 2; i < messages.length; i++) {
+                    messages[i].remove();
+                }
+                
+                // Remove any result messages and buttons
+                const resultMessages = chatMessages.querySelectorAll('.result-message');
+                resultMessages.forEach(el => el.remove());
+                
+                const optionsContainers = chatMessages.querySelectorAll('.options-container');
+                optionsContainers.forEach(el => el.remove());
+            }
+            
+            function addBotMessage(message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message bot-message';
+                messageElement.innerHTML = message;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function addUserMessage(message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message user-message';
+                messageElement.textContent = message;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function displayOptions(options) {
+                if (!options || options.length === 0) return;
+                
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'options-container';
+                
+                options.forEach(option => {
+                    const optionButton = document.createElement('button');
+                    optionButton.className = 'option-button';
+                    optionButton.textContent = option;
+                    optionButton.addEventListener('click', function() {
+                        userInput.value = option;
+                        handleUserInput();
+                    });
+                    
+                    optionsContainer.appendChild(optionButton);
+                });
+                
+                chatMessages.appendChild(optionsContainer);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function showTypingIndicator() {
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'message bot-message typing-indicator';
+                typingIndicator.id = 'typing-indicator';
+                
+                for (let i = 0; i < 3; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'typing-dot';
+                    typingIndicator.appendChild(dot);
+                }
+                
+                chatMessages.appendChild(typingIndicator);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function removeTypingIndicator() {
+                const typingIndicator = document.getElementById('typing-indicator');
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
