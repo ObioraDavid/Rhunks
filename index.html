@@ -163,6 +163,7 @@ textarea.form-input {
         .hero-content {
             width: 50%;
             z-index: 1;
+            position: relative; /* Added to position the arrows relative to this container */
         }
         
         .hero-title {
@@ -192,11 +193,79 @@ textarea.form-input {
             box-shadow: 0 4px 15px rgba(106, 127, 255, 0.4);
             transition: all 0.3s ease;
             animation: fadeInUp 1s ease 0.4s both;
+            position: relative; /* Added for positioning context */
         }
         
         .cta-button:hover {
             transform: translateY(-5px);
             box-shadow: 0 7px 20px rgba(106, 127, 255, 0.6);
+        }
+        
+        /* Added floating message styles */
+        .floating-text {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: white;
+            color: var(--dark);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: float 4s ease-in-out infinite;
+            width: max-content;
+            max-width: 250px;
+            text-align: center;
+            z-index: 2;
+        }
+        
+        /* Added arrow animations */
+        .arrow {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-top: 5px solid var(--accent);
+            border-right: 5px solid var(--accent);
+            opacity: 0.8;
+            z-index: 2;
+        }
+        
+        .arrow-1 {
+            top: 75px;
+            left: -45px;
+            transform: rotate(45deg);
+            animation: arrowMove1 2s ease-in-out infinite;
+        }
+        
+        .arrow-2 {
+            top: 110px;
+            left: -30px;
+            transform: rotate(45deg);
+            animation: arrowMove2 2s ease-in-out infinite 0.5s;
+        }
+        
+        @keyframes arrowMove1 {
+            0%, 100% {
+                transform: rotate(45deg) translate(0, 0);
+                opacity: 0.8;
+            }
+            50% {
+                transform: rotate(45deg) translate(10px, 10px);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes arrowMove2 {
+            0%, 100% {
+                transform: rotate(45deg) translate(0, 0);
+                opacity: 0.8;
+            }
+            50% {
+                transform: rotate(45deg) translate(10px, 10px);
+                opacity: 1;
+            }
         }
         
         .hero-image {
@@ -499,6 +568,25 @@ textarea.form-input {
                 flex-direction: column;
                 gap: 10px;
             }
+            
+            /* Updated arrow positions for mobile */
+            .arrow-1 {
+                top: auto;
+                bottom: 90px;
+                left: 30%;
+                transform: rotate(135deg);
+            }
+            
+            .arrow-2 {
+                top: auto;
+                bottom: 90px;
+                left: 60%;
+                transform: rotate(135deg);
+            }
+            
+            .floating-text {
+                bottom: 25px;
+            }
         }
     </style>
 </head>
@@ -519,7 +607,7 @@ textarea.form-input {
         "closeContactModal">×</div>
         <h2 class="modal-title">Contact Us</h2>
         <form
-         action ="https://formspree.io/f/mqaerojl"
+         action ="rhunks-38bd5.firebaseapp.com"
           method="post"    
            id="contactForm" >
             <div class="form-group">
@@ -534,7 +622,7 @@ textarea.form-input {
                 <label for="contactMessage" class="form-label">Message</label>
                 <textarea id="contactMessage" class="form-input" placeholder="Enter your message" rows="5" required></textarea>
             </div>
-            <button type="submit" class="form-button">Send Message</button>
+            <button type="submit" onclick="window.location.href='https://mail.google.com/mail/u/0/#inbox?compose=new'"class="form-button">Send Message</button>
         </form>
     </div>
 </div>
@@ -568,6 +656,8 @@ e.preventDefault();
 const name = document.getElementById('contactName').value;
 const email = document.getElementById('contactEmail').value;
 const message = document.getElementById('contactMessage').value;
+// Redirect to 1.html
+window.location.href = "https://mail.google.com/mail/u/0/#inbox?compose=new";
 
 // You can add logic to send the message (e.g., via an API)
 console.log('Contact form submitted:', { name, email, message });
@@ -585,6 +675,9 @@ contactModal.classList.remove('active');
                 <h1 class="hero-title">Your Mental Health <br>Is Priority</h1>
                 <p class="hero-subtitle">Taking care of your mental wellbeing is just as important as physical health. Begin your journey to a healthier mind today with support that understands you.</p>
                 <a href="mental.html" class="cta-button">Anonymous Chat</a>
+                <div class="floating-text">Conversations made here won't be saved or recorded</div>
+                <div class="arrow arrow-1"></div>
+                <div class="arrow arrow-2"></div>
             </div>
             
             <div class="hero-image">
@@ -923,5 +1016,28 @@ loginForm.addEventListener('submit', function(e) {
             particlesCanvas.height = window.innerHeight;
         });
     </script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyAGqf47Y7V2zitAFA_56rpz-HQd2fS__bk",
+          authDomain: "rhunks-38bd5.firebaseapp.com",
+          projectId: "rhunks-38bd5",
+          storageBucket: "rhunks-38bd5.firebasestorage.app",
+          messagingSenderId: "481907636721",
+          appId: "1:481907636721:web:9af72efff4041dc4ffec50",
+          measurementId: "G-F7FD0EVH4N"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+      </script>
 </body>
 </html>
