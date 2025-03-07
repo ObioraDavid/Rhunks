@@ -139,21 +139,17 @@
     }
 
     .mood-history-card {
-      grid-column: span 8;
+      grid-column: span 6;
     }
 
     .journal-card {
-      grid-column: span 4;
+      grid-column: span 6;
       max-height: 400px;
       overflow-y: auto;
     }
 
-    .activity-card {
-      grid-column: span 6;
-    }
-
     .goals-card {
-      grid-column: span 6;
+      grid-column: span 12;
     }
 
     .card h2 {
@@ -163,7 +159,33 @@
       font-weight: 600;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .add-icon {
+      width: 24px;
+      height: 24px;
+      background-color: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: bold;
+    }
+
+    .add-icon:hover {
+      transform: rotate(90deg);
+      background-color: var(--secondary);
     }
 
     .stat {
@@ -272,35 +294,10 @@
       line-height: 1.4;
     }
 
-    .activities {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .activity {
-      background: rgba(106, 127, 255, 0.1);
-      border-radius: 20px;
-      padding: 8px 15px;
-      font-size: 14px;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.3s ease;
-    }
-
-    .activity:hover {
-      background: var(--primary);
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    .activity-icon {
-      font-size: 16px;
-    }
-
     .goals {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
       margin-top: 10px;
     }
 
@@ -308,7 +305,14 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 15px;
+      padding: 10px;
+      background-color: rgba(106, 127, 255, 0.05);
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .goal:hover {
+      background-color: rgba(106, 127, 255, 0.1);
     }
 
     .goal-checkbox {
@@ -321,6 +325,7 @@
       justify-content: center;
       cursor: pointer;
       transition: all 0.2s ease;
+      flex-shrink: 0;
     }
 
     .goal-checkbox.completed {
@@ -345,7 +350,7 @@
     }
 
     .progress-container {
-      margin-top: 10px;
+      margin-top: 20px;
       height: 8px;
       background-color: rgba(0,0,0,0.05);
       border-radius: 4px;
@@ -606,6 +611,108 @@
       }
     }
 
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: 12px;
+      padding: 25px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      position: relative;
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-title {
+      color: var(--primary);
+      margin-bottom: 15px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 24px;
+      color: var(--dark);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close:hover {
+      color: var(--danger);
+      transform: rotate(90deg);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 10px 15px;
+      border-radius: 8px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(106, 127, 255, 0.2);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-submit {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      margin-left: auto;
+    }
+
+    .form-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(106, 127, 255, 0.3);
+    }
+
     /* Media Queries for Responsiveness */
     @media (max-width: 992px) {
       .stats-card {
@@ -614,10 +721,13 @@
       .chart-card {
         grid-column: span 8;
       }
+      .mood-history-card, .journal-card {
+        grid-column: span 6;
+      }
     }
 
     @media (max-width: 768px) {
-      .stats-card, .chart-card, .mood-history-card, .journal-card, .activity-card, .goals-card {
+      .stats-card, .chart-card, .mood-history-card, .journal-card, .goals-card {
         grid-column: span 12;
       }
       
@@ -644,6 +754,10 @@
         flex-direction: column;
         gap: 20px;
       }
+      
+      .goals {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -661,22 +775,20 @@
           <span>Logout</span>
           <span class="logout-icon">→</span>
         </button>
-        
       </div>
     </header>
 
- <!-- New Navigation Section -->
- <div class="grid">
-  <div class="card navigation-card">
-    <h2 class="navigation-title">Mental Assessment</h2>
-    <div class="arrow-container">
-      <div class="arrow left" id="leftArrow"></div>
-      <button class="page-btn"onclick="window.location.href='mental.html'" id="newPageBtn">Take a Mental Assessment </button>
-      <div class="arrow right" id="rightArrow"></div>
+    <!-- Navigation Section -->
+    <div class="grid">
+      <div class="card navigation-card">
+        <h2 class="navigation-title">Mental Assessment</h2>
+        <div class="arrow-container">
+          <div class="arrow left" id="leftArrow"></div>
+          <button class="page-btn" onclick="window.location.href='mental.html'" id="newPageBtn">Take a Mental Assessment</button>
+          <div class="arrow right" id="rightArrow"></div>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-</div>
 
     <div class="grid">
       <div class="card stats-card">
@@ -750,7 +862,10 @@
       </div>
 
       <div class="card journal-card">
-        <h2>Journal Entries</h2>
+        <h2>
+          <div class="card-title">Journal Entries</div>
+          <div class="add-icon" id="addJournalBtn">+</div>
+        </h2>
         <div class="journal-entry">
           <div class="journal-date">March 3, 2025</div>
           <div class="journal-content">Had a productive therapy session today. Discussed new coping strategies for work stress. Feeling hopeful.</div>
@@ -771,46 +886,11 @@
     </div>
 
     <div class="grid">
-      <div class="card activity-card">
-        <h2>Wellness Activities</h2>
-        <div class="activities">
-          <div class="activity">
-            <span class="activity-icon">🧘</span>
-            <span>Meditation (7x)</span>
-          </div>
-          <div class="activity">
-            <span class="activity-icon">🚶</span>
-            <span>Walking (5x)</span>
-          </div>
-          <div class="activity">
-            <span class="activity-icon">📝</span>
-            <span>Journaling (14x)</span>
-          </div>
-          <div class="activity">
-            <span class="activity-icon">💪</span>
-            <span>Exercise (3x)</span>
-          </div>
-          <div class="activity">
-            <span class="activity-icon">📚</span>
-            <span>Reading (8x)</span>
-          </div>
-          <div class="activity">
-            <span class="activity-icon">🎵</span>
-            <span>Music (11x)</span>
-          </div>
-          <div class="activity">
-            <span class="activity-icon">👥</span>
-            <span>Social (4x)</span>
-          </div>
-          <div class="activity">
-            <span class="activity-icon">🧠</span>
-            <span>Therapy (2x)</span>
-          </div>
-        </div>
-      </div>
-
       <div class="card goals-card">
-        <h2>Weekly Goals</h2>
+        <h2>
+          <div class="card-title">Weekly Goals</div>
+          <div class="add-icon" id="addGoalBtn">+</div>
+        </h2>
         <div class="goals">
           <div class="goal completed">
             <div class="goal-checkbox completed"></div>
@@ -837,6 +917,50 @@
           <div class="progress-bar"></div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Journal Entry Modal -->
+  <div class="modal" id="journalModal">
+    <div class="modal-content">
+      <div class="modal-title">Add New Journal Entry</div>
+      <span class="modal-close" id="closeJournalModal">&times;</span>
+      <form id="journalForm">
+        <div class="form-group">
+          <label class="form-label" for="journalDate">Date</label>
+          <input type="date" id="journalDate" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="journalContent">Journal Entry</label>
+          <textarea id="journalContent" class="form-textarea" placeholder="How are you feeling today?" required></textarea>
+        </div>
+        <button type="submit" class="form-submit">Add Entry</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Goal Modal -->
+  <div class="modal" id="goalModal">
+    <div class="modal-content">
+      <div class="modal-title">Add New Goal</div>
+      <span class="modal-close" id="closeGoalModal">&times;</span>
+      <form id="goalForm">
+        <div class="form-group">
+          <label class="form-label" for="goalText">Goal Description</label>
+          <input type="text" id="goalText" class="form-input" placeholder="Enter your goal" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="goalCategory">Category</label>
+          <select id="goalCategory" class="form-input">
+            <option value="self-care">Self-Care</option>
+            <option value="mindfulness">Mindfulness</option>
+            <option value="physical">Physical Health</option>
+            <option value="social">Social Connection</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <button type="submit" class="form-submit">Add Goal</button>
+      </form>
     </div>
   </div>
 
@@ -964,5 +1088,163 @@
       });
     });
   </script>
+  <script>// Get modal elements
+    const journalModal = document.getElementById('journalModal');
+    const goalModal = document.getElementById('goalModal');
+    
+    // Get button elements
+    const addJournalBtn = document.getElementById('addJournalBtn');
+    const addGoalBtn = document.getElementById('addGoalBtn');
+    const closeJournalModal = document.getElementById('closeJournalModal');
+    const closeGoalModal = document.getElementById('closeGoalModal');
+    
+    // Get form elements
+    const journalForm = document.getElementById('journalForm');
+    const goalForm = document.getElementById('goalForm');
+    
+    // Set today's date as default for journal entry
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('journalDate').value = today;
+    });
+    
+    // Open modals when + buttons are clicked
+    addJournalBtn.addEventListener('click', function() {
+      journalModal.style.display = 'flex';
+    });
+    
+    addGoalBtn.addEventListener('click', function() {
+      goalModal.style.display = 'flex';
+    });
+    
+    // Close modals when X is clicked
+    closeJournalModal.addEventListener('click', function() {
+      journalModal.style.display = 'none';
+    });
+    
+    closeGoalModal.addEventListener('click', function() {
+      goalModal.style.display = 'none';
+    });
+    
+    // Close modals when clicking outside the modal content
+    window.addEventListener('click', function(event) {
+      if (event.target === journalModal) {
+        journalModal.style.display = 'none';
+      }
+      if (event.target === goalModal) {
+        goalModal.style.display = 'none';
+      }
+    });
+    
+    // Handle journal form submission
+    journalForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      // Get form values
+      const journalDate = document.getElementById('journalDate').value;
+      const journalContent = document.getElementById('journalContent').value;
+      
+      // Format the date
+      const formattedDate = new Date(journalDate).toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      
+      // Create new journal entry
+      const newEntry = document.createElement('div');
+      newEntry.className = 'journal-entry';
+      newEntry.innerHTML = `
+        <div class="journal-date">${formattedDate}</div>
+        <div class="journal-content">${journalContent}</div>
+      `;
+      
+      // Add new entry to the beginning of the journal card
+      const journalCard = document.querySelector('.journal-card');
+      const firstEntry = journalCard.querySelector('.journal-entry');
+      journalCard.insertBefore(newEntry, firstEntry);
+      
+      // Add fade-in effect
+      newEntry.style.opacity = '0';
+      newEntry.style.transform = 'translateY(10px)';
+      newEntry.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      
+      setTimeout(() => {
+        newEntry.style.opacity = '1';
+        newEntry.style.transform = 'translateY(0)';
+      }, 10);
+      
+      // Update journal entry count in stats
+      const journalCountElement = document.querySelector('.stat:nth-child(2) .stat-value');
+      let journalCount = parseInt(journalCountElement.textContent);
+      journalCountElement.textContent = (journalCount + 1).toString();
+      
+      // Reset form and close modal
+      journalForm.reset();
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('journalDate').value = today;
+      journalModal.style.display = 'none';
+    });
+    
+    // Handle goal form submission
+    goalForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      // Get form values
+      const goalText = document.getElementById('goalText').value;
+      const goalCategory = document.getElementById('goalCategory').value;
+      
+      // Create new goal
+      const newGoal = document.createElement('div');
+      newGoal.className = 'goal';
+      newGoal.innerHTML = `
+        <div class="goal-checkbox"></div>
+        <div class="goal-text">${goalText}</div>
+      `;
+      
+      // Add event listener to new goal checkbox
+      const checkbox = newGoal.querySelector('.goal-checkbox');
+      checkbox.addEventListener('click', function() {
+        this.classList.toggle('completed');
+        this.parentElement.classList.toggle('completed');
+        
+        // Update progress bar
+        updateProgressBar();
+      });
+      
+      // Add new goal to the goals container
+      const goalsContainer = document.querySelector('.goals');
+      goalsContainer.appendChild(newGoal);
+      
+      // Add fade-in effect
+      newGoal.style.opacity = '0';
+      newGoal.style.transform = 'translateY(10px)';
+      newGoal.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+      
+      setTimeout(() => {
+        newGoal.style.opacity = '1';
+        newGoal.style.transform = 'translateY(0)';
+      }, 10);
+      
+      // Update progress bar
+      updateProgressBar();
+      
+      // Reset form and close modal
+      goalForm.reset();
+      goalModal.style.display = 'none';
+    });
+    
+    // Function to update progress bar
+    function updateProgressBar() {
+      const totalGoals = document.querySelectorAll('.goal').length;
+      const completedGoals = document.querySelectorAll('.goal.completed').length;
+      const progressPercent = (completedGoals / totalGoals) * 100;
+      
+      const progressBar = document.querySelector('.progress-bar');
+      progressBar.style.width = progressPercent + '%';
+      
+      // Add transition for smooth animation
+      progressBar.style.transition = 'width 0.5s ease';
+    }</script>
 </body>
 </html>
