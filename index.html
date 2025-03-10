@@ -956,15 +956,16 @@
                     .then((userCredential) => {
                         // Signed in 
                         const user = userCredential.user;
-                        console.log(user.uid);
 
                         // ...
                         // Simple validation feedback
                         alert('Login successful! Redirecting to dashboard...');
-
+                        
                         // Reset form and close modal
                         loginForm.reset();
                         loginModal.classList.remove('active');
+                        
+                        localStorage.setItem('user', JSON.stringify(user));
 
                         // Redirect to 1.html
                         window.location.href = `Dashboard.html`;
