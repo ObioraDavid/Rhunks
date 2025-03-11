@@ -960,11 +960,11 @@
                         // ...
                         // Simple validation feedback
                         alert('Login successful! Redirecting to dashboard...');
-                        
+
                         // Reset form and close modal
                         loginForm.reset();
                         loginModal.classList.remove('active');
-                        
+
                         localStorage.setItem('user', JSON.stringify(user));
 
                         // Redirect to 1.html
@@ -978,6 +978,10 @@
 
             // Handle signup form submission
             signupForm.addEventListener('submit', function (e) {
+                const submitBtn = document.querySelector('signupForm .form-button');
+                console.log(submitBtn);
+                
+                submitBtn.disabled = true;
                 e.preventDefault();
                 const name = document.getElementById('signupName').value;
                 const email = document.getElementById('signupEmail').value;
@@ -1007,6 +1011,8 @@
                         const errorMessage = error.message;
                         // ..
                     });
+
+                submitBtn.disabled = false;
             });
         });
 
