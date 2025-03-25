@@ -2,1201 +2,1218 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mental Health Progress Dashboard</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-  <style>
-    :root {
-      --primary: #6a7fff;
-      --secondary: #ff7fa7;
-      --accent: #7fffd4;
-      --dark: #2d3748;
-      --light: #f8f9fa;
-      --danger: #e74c3c;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background-color: var(--light);
-      color: var(--dark);
-    }
-
-    .dashboard {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 30px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid var(--accent);
-    }
-
-    header h1 {
-      color: var(--primary);
-      font-size: 28px;
-      font-weight: 700;
-      position: relative;
-    }
-
-    header h1::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: var(--secondary);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% {
-        opacity: 0.7;
-      }
-
-      50% {
-        opacity: 1;
-      }
-
-      100% {
-        opacity: 0.7;
-      }
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background-color: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: bold;
-      color: var(--dark);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      animation: float 3s ease-in-out infinite;
-      text-transform: ;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translateY(0px);
-      }
-
-      50% {
-        transform: translateY(-5px);
-      }
-
-      100% {
-        transform: translateY(0px);
-      }
-    }
-
-    .user-info {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .user-name {
-      font-weight: 600;
-      color: var(--dark);
-    }
-
-    .date-selector {
-      margin-top: 5px;
-      cursor: pointer;
-      color: var(--primary);
-      font-size: 14px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
-    }
-
-    .stats-card {
-      grid-column: span 3;
-    }
-
-    .chart-card {
-      grid-column: span 9;
-    }
-
-    .mood-history-card {
-      grid-column: span 6;
-    }
-
-    .journal-card {
-      grid-column: span 6;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    .goals-card {
-      grid-column: span 12;
-    }
-
-    .card h2 {
-      color: var(--primary);
-      margin-bottom: 15px;
-      font-size: 18px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .card-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .add-icon {
-      width: 24px;
-      height: 24px;
-      background-color: var(--primary);
-      color: white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: bold;
-    }
-
-    .add-icon:hover {
-      transform: rotate(90deg);
-      background-color: var(--secondary);
-    }
-
-    .stat {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .stat:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .stat-label {
-      color: var(--dark);
-      font-weight: 500;
-    }
-
-    .stat-value {
-      font-weight: 600;
-      background: linear-gradient(to right, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: shimmer 2s infinite linear;
-      background-size: 200% 100%;
-    }
-
-    @keyframes shimmer {
-      0% {
-        background-position: 200% 0;
-      }
-
-      100% {
-        background-position: -200% 0;
-      }
-    }
-
-    .chart-container {
-      height: 300px;
-      width: 100%;
-    }
-
-    .mood-history {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .mood-day {
-      flex: 1;
-      min-width: 80px;
-      background: white;
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.03);
-      transition: all 0.3s ease;
-    }
-
-    .mood-day:hover {
-      transform: scale(1.05);
-      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .mood-day .date {
-      font-size: 12px;
-      color: var(--dark);
-      opacity: 0.7;
-    }
-
-    .mood-day .mood {
-      font-size: 24px;
-      margin: 5px 0;
-    }
-
-    .mood-day .rating {
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .mood-rating-1 {
-      color: #E74C3C;
-    }
-
-    .mood-rating-2 {
-      color: #E67E22;
-    }
-
-    .mood-rating-3 {
-      color: #F1C40F;
-    }
-
-    .mood-rating-4 {
-      color: #2ECC71;
-    }
-
-    .mood-rating-5 {
-      color: #3498DB;
-    }
-
-    .journal-entry {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    }
-
-    .journal-entry:last-child {
-      border-bottom: none;
-    }
-
-    .journal-date {
-      font-size: 12px;
-      color: var(--dark);
-      opacity: 0.7;
-      margin-bottom: 5px;
-    }
-
-    .journal-content {
-      font-size: 14px;
-      line-height: 1.4;
-    }
-
-    .goals {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 15px;
-      margin-top: 10px;
-    }
-
-    .goal {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px;
-      background-color: rgba(106, 127, 255, 0.05);
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-
-    .goal:hover {
-      background-color: rgba(106, 127, 255, 0.1);
-    }
-
-    .goal-checkbox {
-      width: 20px;
-      height: 20px;
-      border-radius: 5px;
-      border: 2px solid var(--primary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .goal-checkbox.completed {
-      background-color: var(--primary);
-      border-color: var(--primary);
-    }
-
-    .goal-checkbox.completed::after {
-      content: '✓';
-      color: white;
-      font-size: 12px;
-    }
-
-    .goal-text {
-      flex: 1;
-      font-size: 14px;
-    }
-
-    .goal.completed .goal-text {
-      text-decoration: line-through;
-      opacity: 0.7;
-    }
-
-    .progress-container {
-      margin-top: 20px;
-      height: 8px;
-      background-color: rgba(0, 0, 0, 0.05);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      background: linear-gradient(to right, var(--primary), var(--accent));
-      width: 65%;
-      border-radius: 4px;
-      animation: progress-animation 1.5s ease-in-out;
-    }
-
-    @keyframes progress-animation {
-      0% {
-        width: 0%;
-      }
-
-      100% {
-        width: 65%;
-      }
-    }
-
-    /* LOGOUT BUTTON STYLES */
-    .logout-btn {
-      background: linear-gradient(135deg, var(--danger), #c0392b);
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
-      transition: all 0.3s ease;
-      margin-left: 15px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .logout-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 15px rgba(231, 76, 60, 0.3);
-    }
-
-    .logout-btn:active {
-      transform: translateY(0);
-    }
-
-    .logout-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: 0.5s;
-    }
-
-    .logout-btn:hover::before {
-      left: 100%;
-    }
-
-    .logout-icon {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      position: relative;
-      transition: transform 0.3s ease;
-    }
-
-    .logout-btn:hover .logout-icon {
-      transform: translateX(3px);
-    }
-
-    /* NAVIGATION SECTION STYLES */
-    .navigation-card {
-      grid-column: span 12;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background: linear-gradient(135deg, rgba(106, 127, 255, 0.1), rgba(127, 255, 212, 0.1));
-      padding: 30px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .navigation-title {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 22px;
-      margin-bottom: 25px;
-      text-align: center;
-      position: relative;
-    }
-
-    .navigation-title::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 50px;
-      height: 3px;
-      background: var(--secondary);
-    }
-
-    .arrow-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      margin: 15px 0 30px;
-    }
-
-    .arrow {
-      width: 40px;
-      height: 40px;
-      margin: 0 15px;
-      cursor: pointer;
-      position: relative;
-      animation: bounceArrow 2s infinite;
-    }
-
-    .arrow.left {
-      animation-delay: 0.3s;
-    }
-
-    .arrow.right {
-      animation-delay: 0.6s;
-    }
-
-    @keyframes bounceArrow {
-
-      0%,
-      100% {
-        transform: translateX(0);
-      }
-
-      50% {
-        transform: translateX(10px);
-      }
-    }
-
-    .arrow::before,
-    .arrow::after {
-      content: '';
-      position: absolute;
-      background-color: var(--primary);
-      top: 50%;
-    }
-
-    /* Arrow stem */
-    .arrow::before {
-      width: 30px;
-      height: 6px;
-      left: 0;
-      transform: translateY(-50%);
-      border-radius: 3px;
-    }
-
-    /* Arrow head */
-    .arrow::after {
-      width: 16px;
-      height: 6px;
-      right: -4px;
-      transform: translateY(-50%) rotate(45deg);
-      transform-origin: right center;
-      border-radius: 2px;
-    }
-
-    .arrow::before {
-      width: 30px;
-      height: 6px;
-    }
-
-    .arrow.right::after {
-      top: 12px;
-    }
-
-    .arrow.right::before {
-      transform: translateY(-50%);
-    }
-
-    .arrow.right::after {
-      top: 14px;
-      transform: rotate(45deg);
-    }
-
-    .arrow.left::before {
-      left: 10px;
-    }
-
-    .arrow.left::after {
-      left: 0;
-      top: 14px;
-      transform: rotate(-45deg);
-    }
-
-    .page-btn {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.4s ease;
-      box-shadow: 0 6px 20px rgba(106, 127, 255, 0.3);
-      position: relative;
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    .page-btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, var(--secondary), var(--primary));
-      transition: opacity 0.4s ease;
-      z-index: -1;
-      opacity: 0;
-      border-radius: 50px;
-    }
-
-    .page-btn:hover::before {
-      opacity: 1;
-    }
-
-    .page-btn:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(106, 127, 255, 0.4);
-    }
-
-    /* Pulse effect around the button */
-    .page-btn::after {
-      content: '';
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      top: 0;
-      left: 0;
-      background: var(--primary);
-      border-radius: 50px;
-      z-index: -2;
-      opacity: 0.5;
-      animation: pulse-ring 2s infinite;
-    }
-
-    @keyframes pulse-ring {
-      0% {
-        transform: scale(0.95);
-        opacity: 0.7;
-      }
-
-      50% {
-        transform: scale(1.05);
-        opacity: 0.3;
-      }
-
-      100% {
-        transform: scale(0.95);
-        opacity: 0.7;
-      }
-    }
-
-    /* Modal styles */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      z-index: 100;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background-color: white;
-      border-radius: 12px;
-      padding: 25px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      position: relative;
-      animation: modalFadeIn 0.3s ease;
-    }
-
-    @keyframes modalFadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .modal-title {
-      color: var(--primary);
-      margin-bottom: 15px;
-      font-size: 20px;
-      font-weight: 600;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 24px;
-      color: var(--dark);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .modal-close:hover {
-      color: var(--danger);
-      transform: rotate(90deg);
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-      color: var(--dark);
-    }
-
-    .form-input,
-    .form-textarea {
-      width: 100%;
-      padding: 10px 15px;
-      border-radius: 8px;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      font-size: 14px;
-      transition: all 0.3s ease;
-    }
-
-    .form-input:focus,
-    .form-textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(106, 127, 255, 0.2);
-    }
-
-    .form-textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .form-submit {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-      padding: 12px 25px;
-      border-radius: 50px;
-      font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: block;
-      margin-left: auto;
-    }
-
-    .form-submit:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(106, 127, 255, 0.3);
-    }
-
-    /* Media Queries for Responsiveness */
-    @media (max-width: 992px) {
-      .stats-card {
-        grid-column: span 4;
-      }
-
-      .chart-card {
-        grid-column: span 8;
-      }
-
-      .mood-history-card,
-      .journal-card {
-        grid-column: span 6;
-      }
-    }
-
-    @media (max-width: 768px) {
-
-      .stats-card,
-      .chart-card,
-      .mood-history-card,
-      .journal-card,
-      .goals-card {
-        grid-column: span 12;
-      }
-
-      .user-profile {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .logout-btn {
-        margin-left: 0;
-        margin-top: 10px;
-      }
-
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      header h1 {
-        margin-bottom: 20px;
-      }
-
-      .arrow-container {
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .goals {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mental Health Progress Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary: #6a7fff;
+            --secondary: #ff7fa7;
+            --accent: #7fffd4;
+            --dark: #2d3748;
+            --light: #f8f9fa;
+            --danger: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 28px;
+            font-weight: 700;
+            position: relative;
+        }
+
+        header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.7;
+            }
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--dark);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: float 3s ease-in-out infinite;
+            text-transform: uppercase;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .date-selector {
+            margin-top: 5px;
+            cursor: pointer;
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card {
+            grid-column: span 3;
+        }
+
+        .chart-card {
+            grid-column: span 9;
+        }
+
+        .mood-history-card {
+            grid-column: span 6;
+        }
+
+        .journal-card {
+            grid-column: span 6;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .goals-card {
+            grid-column: span 12;
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-icon {
+            width: 24px;
+            height: 24px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .add-icon:hover {
+            transform: rotate(90deg);
+            background-color: var(--secondary);
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .stat:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .stat-label {
+            color: var(--dark);
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 2s infinite linear;
+            background-size: 200% 100%;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .chart-container {
+            height: 300px;
+            width: 100%;
+        }
+
+        .mood-history {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mood-day {
+            flex: 1;
+            min-width: 80px;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+
+        .mood-day:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mood-day .date {
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.7;
+        }
+
+        .mood-day .mood {
+            font-size: 24px;
+            margin: 5px 0;
+        }
+
+        .mood-day .rating {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .mood-rating-1 {
+            color: #E74C3C;
+        }
+
+        .mood-rating-2 {
+            color: #E67E22;
+        }
+
+        .mood-rating-3 {
+            color: #F1C40F;
+        }
+
+        .mood-rating-4 {
+            color: #2ECC71;
+        }
+
+        .mood-rating-5 {
+            color: #3498DB;
+        }
+
+        .journal-entry {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .journal-entry:last-child {
+            border-bottom: none;
+        }
+
+        .journal-date {
+            font-size: 12px;
+            color: var(--dark);
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .journal-content {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .goals {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .goal {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: rgba(106, 127, 255, 0.05);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .goal:hover {
+            background-color: rgba(106, 127, 255, 0.1);
+        }
+
+        .goal-checkbox {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .goal-checkbox.completed {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .goal-checkbox.completed::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+        }
+
+        .goal-text {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .goal.completed .goal-text {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            height: 8px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            width: 65%;
+            border-radius: 4px;
+            animation: progress-animation 1.5s ease-in-out;
+        }
+
+        @keyframes progress-animation {
+            0% {
+                width: 0%;
+            }
+
+            100% {
+                width: 65%;
+            }
+        }
+
+        /* LOGOUT BUTTON STYLES */
+        .logout-btn {
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+            transition: all 0.3s ease;
+            margin-left: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0);
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .logout-btn:hover::before {
+            left: 100%;
+        }
+
+        .logout-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .logout-btn:hover .logout-icon {
+            transform: translateX(3px);
+        }
+
+        /* NAVIGATION SECTION STYLES */
+        .navigation-card {
+            grid-column: span 12;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(106, 127, 255, 0.1), rgba(127, 255, 212, 0.1));
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .navigation-title {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .navigation-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+        }
+
+        .arrow-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin: 15px 0 30px;
+        }
+
+        .arrow {
+            width: 40px;
+            height: 40px;
+            margin: 0 15px;
+            cursor: pointer;
+            position: relative;
+            animation: bounceArrow 2s infinite;
+        }
+
+        .arrow.left {
+            animation-delay: 0.3s;
+        }
+
+        .arrow.right {
+            animation-delay: 0.6s;
+        }
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            50% {
+                transform: translateX(10px);
+            }
+        }
+
+        .arrow::before,
+        .arrow::after {
+            content: '';
+            position: absolute;
+            background-color: var(--primary);
+            top: 50%;
+        }
+
+        /* Arrow stem */
+        .arrow::before {
+            width: 30px;
+            height: 6px;
+            left: 0;
+            transform: translateY(-50%);
+            border-radius: 3px;
+        }
+
+        /* Arrow head */
+        .arrow::after {
+            width: 16px;
+            height: 6px;
+            right: -4px;
+            transform: translateY(-50%) rotate(45deg);
+            transform-origin: right center;
+            border-radius: 2px;
+        }
+
+        .arrow::before {
+            width: 30px;
+            height: 6px;
+        }
+
+        .arrow.right::after {
+            top: 12px;
+        }
+
+        .arrow.right::before {
+            transform: translateY(-50%);
+        }
+
+        .arrow.right::after {
+            top: 14px;
+            transform: rotate(45deg);
+        }
+
+        .arrow.left::before {
+            left: 10px;
+        }
+
+        .arrow.left::after {
+            left: 0;
+            top: 14px;
+            transform: rotate(-45deg);
+        }
+
+        .page-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            box-shadow: 0 6px 20px rgba(106, 127, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .page-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            transition: opacity 0.4s ease;
+            z-index: -1;
+            opacity: 0;
+            border-radius: 50px;
+        }
+
+        .page-btn:hover::before {
+            opacity: 1;
+        }
+
+        .page-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(106, 127, 255, 0.4);
+        }
+
+        /* Pulse effect around the button */
+        .page-btn::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: var(--primary);
+            border-radius: 50px;
+            z-index: -2;
+            opacity: 0.5;
+            animation: pulse-ring 2s infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: scale(0.95);
+                opacity: 0.7;
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-title {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(106, 127, 255, 0.2);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-submit {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin-left: auto;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(106, 127, 255, 0.3);
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 992px) {
+            .stats-card {
+                grid-column: span 4;
+            }
+
+            .chart-card {
+                grid-column: span 8;
+            }
+
+            .mood-history-card,
+            .journal-card {
+                grid-column: span 6;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .stats-card,
+            .chart-card,
+            .mood-history-card,
+            .journal-card,
+            .goals-card {
+                grid-column: span 12;
+            }
+
+            .user-profile {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .logout-btn {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            header h1 {
+                margin-bottom: 20px;
+            }
+
+            .arrow-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .goals {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div class="dashboard">
-    <header>
-      <h1>RHUNK .</h1>
-      <div class="user-profile">
-        <div class="avatar">BM</div>
-        <div class="user-info">
-          <div class="user-name"></div>
-        </div>
-        <button class="logout-btn" id="logoutBtn">
-          <span>Logout</span>
-          <span class="logout-icon">→</span>
-        </button>
-      </div>
-    </header>
+    <div class="dashboard">
+        <header>
+            <h1>RHUNK .</h1>
+            <div class="user-profile">
+                <div class="avatar" id="userAvatar">BM</div>
+                <div class="user-info">
+                    <div class="user-name" id="userDisplayName"></div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <span>Logout</span>
+                    <span class="logout-icon">→</span>
+                </button>
+            </div>
+        </header>
 
-    <!-- Navigation Section -->
-    <div class="grid">
-      <div class="card navigation-card">
-        <h2 class="navigation-title">Mental Assessment</h2>
-        <div class="arrow-container">
-          <div class="arrow left" id="leftArrow"></div>
-          <button class="page-btn" onclick="window.location.href='mental.html'" id="newPageBtn">Take a Mental
-            Assessment</button>
-          <div class="arrow right" id="rightArrow"></div>
+        <!-- Navigation Section -->
+        <div class="grid">
+            <div class="card navigation-card">
+                <h2 class="navigation-title">Mental Assessment</h2>
+                <div class="arrow-container">
+                    <div class="arrow left" id="leftArrow"></div>
+                    <button class="page-btn" onclick="window.location.href='mental.html'" id="newPageBtn">Take a Mental
+                        Assessment</button>
+                    <div class="arrow right" id="rightArrow"></div>
+                </div>
+            </div>
         </div>
-      </div>
+
+        <div class="grid">
+            <div class="card stats-card">
+                <h2>Overview</h2>
+                <div class="stat">
+                    <div class="stat-label">Average Mood</div>
+                    <div class="stat-value">3.8/5</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Journal Entries</div>
+                    <div class="stat-value">14</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Activities Done</div>
+                    <div class="stat-value">22</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Streak</div>
+                    <div class="stat-value">7 days</div>
+                </div>
+            </div>
+
+            <div class="card chart-card">
+                <h2>Mood Trend</h2>
+                <div class="chart-container">
+                    <canvas id="moodChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card mood-history-card">
+                <h2>Recent Moods</h2>
+                <div class="mood-history">
+                    <div class="mood-day">
+                        <div class="date">Mar 3</div>
+                        <div class="mood">😊</div>
+                        <div class="rating mood-rating-4">4/5</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="date">Mar 2</div>
+                        <div class="mood">😀</div>
+                        <div class="rating mood-rating-4">4/5</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="date">Mar 1</div>
+                        <div class="mood">😐</div>
+                        <div class="rating mood-rating-3">3/5</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="date">Feb 28</div>
+                        <div class="mood">🙂</div>
+                        <div class="rating mood-rating-3">3/5</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="date">Feb 27</div>
+                        <div class="mood">😊</div>
+                        <div class="rating mood-rating-4">4/5</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="date">Feb 26</div>
+                        <div class="mood">😀</div>
+                        <div class="rating mood-rating-5">5/5</div>
+                    </div>
+                    <div class="mood-day">
+                        <div class="date">Feb 25</div>
+                        <div class="mood">😞</div>
+                        <div class="rating mood-rating-2">2/5</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card journal-card">
+                <h2>
+                    <div class="card-title">Journal Entries</div>
+                    <div class="add-icon" id="addJournalBtn">+</div>
+                </h2>
+                <div class="journal-entry">
+                    <div class="journal-date">March 3, 2025</div>
+                    <div class="journal-content">Had a productive therapy session today. Discussed new coping strategies
+                        for work
+                        stress. Feeling hopeful.</div>
+                </div>
+                <div class="journal-entry">
+                    <div class="journal-date">March 1, 2025</div>
+                    <div class="journal-content">Mixed feelings today. Morning was rough but the afternoon walk helped
+                        clear my
+                        mind.</div>
+                </div>
+                <div class="journal-entry">
+                    <div class="journal-date">February 28, 2025</div>
+                    <div class="journal-content">Practiced mindfulness for 15 minutes. Still finding it challenging to
+                        stay
+                        present but getting better.</div>
+                </div>
+                <div class="journal-entry">
+                    <div class="journal-date">February 26, 2025</div>
+                    <div class="journal-content">Great day! Completed all my tasks and had time for self-care. Feeling
+                        accomplished and balanced.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card goals-card">
+                <h2>
+                    <div class="card-title">Weekly Goals</div>
+                    <div class="add-icon" id="addGoalBtn">+</div>
+                </h2>
+                <div class="goals">
+                    <div class="goal completed">
+                        <div class="goal-checkbox completed"></div>
+                        <div class="goal-text">Practice meditation for 10 minutes daily</div>
+                    </div>
+                    <div class="goal completed">
+                        <div class="goal-checkbox completed"></div>
+                        <div class="goal-text">Journal thoughts 3 times this week</div>
+                    </div>
+                    <div class="goal">
+                        <div class="goal-checkbox"></div>
+                        <div class="goal-text">Take a 30-minute walk outside</div>
+                    </div>
+                    <div class="goal completed">
+                        <div class="goal-checkbox completed"></div>
+                        <div class="goal-text">Read a chapter on mental wellness</div>
+                    </div>
+                    <div class="goal">
+                        <div class="goal-checkbox"></div>
+                        <div class="goal-text">Practice deep breathing when stressed</div>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="grid">
-      <div class="card stats-card">
-        <h2>Overview</h2>
-        <div class="stat">
-          <div class="stat-label">Average Mood</div>
-          <div class="stat-value">3.8/5</div>
+    <!-- Journal Entry Modal -->
+    <div class="modal" id="journalModal">
+        <div class="modal-content">
+            <div class="modal-title">Add New Journal Entry</div>
+            <span class="modal-close" id="closeJournalModal">&times;</span>
+            <form id="journalForm">
+                <div class="form-group">
+                    <label class="form-label" for="journalDate">Date</label>
+                    <input type="date" id="journalDate" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="journalContent">Journal Entry</label>
+                    <textarea id="journalContent" class="form-textarea" placeholder="How are you feeling today?"
+                        required></textarea>
+                </div>
+                <button type="submit" class="form-submit">Add Entry</button>
+            </form>
         </div>
-        <div class="stat">
-          <div class="stat-label">Journal Entries</div>
-          <div class="stat-value">14</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Activities Done</div>
-          <div class="stat-value">22</div>
-        </div>
-        <div class="stat">
-          <div class="stat-label">Streak</div>
-          <div class="stat-value">7 days</div>
-        </div>
-      </div>
-
-      <div class="card chart-card">
-        <h2>Mood Trend</h2>
-        <div class="chart-container">
-          <canvas id="moodChart"></canvas>
-        </div>
-      </div>
     </div>
 
-    <div class="grid">
-      <div class="card mood-history-card">
-        <h2>Recent Moods</h2>
-        <div class="mood-history">
-          <div class="mood-day">
-            <div class="date">Mar 3</div>
-            <div class="mood">😊</div>
-            <div class="rating mood-rating-4">4/5</div>
-          </div>
-          <div class="mood-day">
-            <div class="date">Mar 2</div>
-            <div class="mood">😀</div>
-            <div class="rating mood-rating-4">4/5</div>
-          </div>
-          <div class="mood-day">
-            <div class="date">Mar 1</div>
-            <div class="mood">😐</div>
-            <div class="rating mood-rating-3">3/5</div>
-          </div>
-          <div class="mood-day">
-            <div class="date">Feb 28</div>
-            <div class="mood">🙂</div>
-            <div class="rating mood-rating-3">3/5</div>
-          </div>
-          <div class="mood-day">
-            <div class="date">Feb 27</div>
-            <div class="mood">😊</div>
-            <div class="rating mood-rating-4">4/5</div>
-          </div>
-          <div class="mood-day">
-            <div class="date">Feb 26</div>
-            <div class="mood">😀</div>
-            <div class="rating mood-rating-5">5/5</div>
-          </div>
-          <div class="mood-day">
-            <div class="date">Feb 25</div>
-            <div class="mood">😞</div>
-            <div class="rating mood-rating-2">2/5</div>
-          </div>
+    <!-- Goal Modal -->
+    <div class="modal" id="goalModal">
+        <div class="modal-content">
+            <div class="modal-title">Add New Goal</div>
+            <span class="modal-close" id="closeGoalModal">&times;</span>
+            <form id="goalForm">
+                <div class="form-group">
+                    <label class="form-label" for="goalText">Goal Description</label>
+                    <input type="text" id="goalText" class="form-input" placeholder="Enter your goal" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="goalCategory">Category</label>
+                    <select id="goalCategory" class="form-input">
+                        <option value="self-care">Self-Care</option>
+                        <option value="mindfulness">Mindfulness</option>
+                        <option value="physical">Physical Health</option>
+                        <option value="social">Social Connection</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="form-submit">Add Goal</button>
+            </form>
         </div>
-      </div>
-
-      <div class="card journal-card">
-        <h2>
-          <div class="card-title">Journal Entries</div>
-          <div class="add-icon" id="addJournalBtn">+</div>
-        </h2>
-        <div class="journal-entry">
-          <div class="journal-date">March 3, 2025</div>
-          <div class="journal-content">Had a productive therapy session today. Discussed new coping strategies for work
-            stress. Feeling hopeful.</div>
-        </div>
-        <div class="journal-entry">
-          <div class="journal-date">March 1, 2025</div>
-          <div class="journal-content">Mixed feelings today. Morning was rough but the afternoon walk helped clear my
-            mind.</div>
-        </div>
-        <div class="journal-entry">
-          <div class="journal-date">February 28, 2025</div>
-          <div class="journal-content">Practiced mindfulness for 15 minutes. Still finding it challenging to stay
-            present but getting better.</div>
-        </div>
-        <div class="journal-entry">
-          <div class="journal-date">February 26, 2025</div>
-          <div class="journal-content">Great day! Completed all my tasks and had time for self-care. Feeling
-            accomplished and balanced.</div>
-        </div>
-      </div>
     </div>
 
-    <div class="grid">
-      <div class="card goals-card">
-        <h2>
-          <div class="card-title">Weekly Goals</div>
-          <div class="add-icon" id="addGoalBtn">+</div>
-        </h2>
-        <div class="goals">
-          <div class="goal completed">
-            <div class="goal-checkbox completed"></div>
-            <div class="goal-text">Practice meditation for 10 minutes daily</div>
-          </div>
-          <div class="goal completed">
-            <div class="goal-checkbox completed"></div>
-            <div class="goal-text">Journal thoughts 3 times this week</div>
-          </div>
-          <div class="goal">
-            <div class="goal-checkbox"></div>
-            <div class="goal-text">Take a 30-minute walk outside</div>
-          </div>
-          <div class="goal completed">
-            <div class="goal-checkbox completed"></div>
-            <div class="goal-text">Read a chapter on mental wellness</div>
-          </div>
-          <div class="goal">
-            <div class="goal-checkbox"></div>
-            <div class="goal-text">Practice deep breathing when stressed</div>
-          </div>
-        </div>
-        <div class="progress-container">
-          <div class="progress-bar"></div>
-        </div>
-      </div>
-    </div>
-  </div>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-  <!-- Journal Entry Modal -->
-  <div class="modal" id="journalModal">
-    <div class="modal-content">
-      <div class="modal-title">Add New Journal Entry</div>
-      <span class="modal-close" id="closeJournalModal">&times;</span>
-      <form id="journalForm">
-        <div class="form-group">
-          <label class="form-label" for="journalDate">Date</label>
-          <input type="date" id="journalDate" class="form-input" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="journalContent">Journal Entry</label>
-          <textarea id="journalContent" class="form-textarea" placeholder="How are you feeling today?"
-            required></textarea>
-        </div>
-        <button type="submit" class="form-submit">Add Entry</button>
-      </form>
-    </div>
-  </div>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAGqf47Y7V2zitAFA_56rpz-HQd2fS__bk",
+            authDomain: "rhunks-38bd5.firebaseapp.com",
+            projectId: "rhunks-38bd5",
+            storageBucket: "rhunks-38bd5.appspot.com",
+            messagingSenderId: "481907636721",
+            appId: "1:481907636721:web:9af72efff4041dc4ffec50",
+            measurementId: "G-F7FD0EVH4N"
+        };
 
-  <!-- Goal Modal -->
-  <div class="modal" id="goalModal">
-    <div class="modal-content">
-      <div class="modal-title">Add New Goal</div>
-      <span class="modal-close" id="closeGoalModal">&times;</span>
-      <form id="goalForm">
-        <div class="form-group">
-          <label class="form-label" for="goalText">Goal Description</label>
-          <input type="text" id="goalText" class="form-input" placeholder="Enter your goal" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="goalCategory">Category</label>
-          <select id="goalCategory" class="form-input">
-            <option value="self-care">Self-Care</option>
-            <option value="mindfulness">Mindfulness</option>
-            <option value="physical">Physical Health</option>
-            <option value="social">Social Connection</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <button type="submit" class="form-submit">Add Goal</button>
-      </form>
-    </div>
-  </div>
-  <script>
-    const userData = JSON.parse(localStorage.getItem('user'));
-    document.querySelector('.user-name').textContent = userData.email
-    document.querySelector('.avatar').textContent = userData.email.slice(0, 2).toString();
-  </script>
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-    // TODO: Add SDKs for Firebase products that you want to use
-    // https://firebase.google.com/docs/web/setup#available-libraries
-
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-      apiKey: "AIzaSyAGqf47Y7V2zitAFA_56rpz-HQd2fS__bk",
-      authDomain: "rhunks-38bd5.firebaseapp.com",
-      projectId: "rhunks-38bd5",
-      storageBucket: "rhunks-38bd5.firebasestorage.app",
-      messagingSenderId: "481907636721",
-      appId: "1:481907636721:web:9af72efff4041dc4ffec50",
-      measurementId: "G-F7FD0EVH4N"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-
-    const logoutBtn = document.getElementById('logoutBtn')
-    logoutBtn.addEventListener('click', () => {
-      const auth = getAuth();
-      signOut(auth).then(() => {
-        window.location.href = 'index.html'
-      }).catch((error) => {
-        // An error happened.
-      });
-    })
-
-    // Initialize chart
-    const ctx = document.getElementById('moodChart').getContext('2d');
-
-    // Sample data for the past 30 days
-    const dates = Array.from({ length: 30 }, (_, i) => {
-      const date = new Date();
-      date.setDate(date.getDate() - (30 - i));
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    });
-
-    // Generate random mood data between 1 and 5
-    const generateMoodData = () => {
-      const baseValue = 3;
-      const data = [];
-      let currentValue = baseValue + (Math.random() * 2 - 1);
-
-      for (let i = 0; i < 30; i++) {
-        // Ensure value stays between 1 and 5
-        currentValue += Math.random() * 0.6 - 0.3;
-        currentValue = Math.max(1, Math.min(5, currentValue));
-        data.push(parseFloat(currentValue.toFixed(1)));
-      }
-
-      return data;
-    };
-
-    const moodData = generateMoodData();
-
-    const moodChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: dates,
-        datasets: [{
-          label: 'Mood Rating',
-          data: moodData,
-          backgroundColor: 'rgba(106, 127, 255, 0.2)',
-          borderColor: 'rgba(106, 127, 255, 1)',
-          borderWidth: 2,
-          tension: 0.4,
-          pointBackgroundColor: 'rgba(106, 127, 255, 1)',
-          pointBorderColor: '#fff',
-          pointRadius: 4,
-          pointHoverRadius: 6,
-          fill: true
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: false,
-            min: 1,
-            max: 5,
-            ticks: {
-              stepSize: 1
+        // Display user information
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                // User is signed in
+                const displayName = user.displayName || user.email.split('@')[0];
+                const initials = displayName.split(' ').map(name => name[0]).join('').toUpperCase();
+                
+                document.getElementById('userDisplayName').textContent = displayName;
+                document.getElementById('userAvatar').textContent = initials.slice(0, 2);
+                
+                // Store user data in localStorage
+                localStorage.setItem('userName', displayName);
+                localStorage.setItem('userEmail', user.email);
+            } else {
+                // User is signed out, redirect to login
+                window.location.href = 'index.html';
             }
-          }
-        },
-        plugins: {
-          legend: {
-            display: false
-          }
-        },
-        animation: {
-          duration: 2000,
-          easing: 'easeOutQuart'
-        }
-      }
-    });
+        });
 
-    // Add click functionality to goal checkboxes
-    document.querySelectorAll('.goal-checkbox').forEach(checkbox => {
-      checkbox.addEventListener('click', function () {
-        this.classList.toggle('completed');
-        this.parentElement.classList.toggle('completed');
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error('Logout error:', error);
+                alert('Failed to logout. Please try again.');
+            });
+        });
 
-        // Update progress bar
-        const totalGoals = document.querySelectorAll('.goal').length;
-        const completedGoals = document.querySelectorAll('.goal.completed').length;
-        const progressPercent = (completedGoals / totalGoals) * 100;
+        // Initialize chart
+        const ctx = document.getElementById('moodChart').getContext('2d');
 
-        document.querySelector('.progress-bar').style.width = progressPercent + '%';
-      });
-    });
+        // Sample data for the past 30 days
+        const dates = Array.from({ length: 30 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (30 - i));
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
 
-    // Add animation to cards on scroll
-    const cards = document.querySelectorAll('.card');
+        // Generate random mood data between 1 and 5
+        const generateMoodData = () => {
+            const baseValue = 3;
+            const data = [];
+            let currentValue = baseValue + (Math.random() * 2 - 1);
 
-    const fadeInCards = () => {
-      cards.forEach(card => {
-        const cardTop = card.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
+            for (let i = 0; i < 30; i++) {
+                // Ensure value stays between 1 and 5
+                currentValue += Math.random() * 0.6 - 0.3;
+                currentValue = Math.max(1, Math.min(5, currentValue));
+                data.push(parseFloat(currentValue.toFixed(1)));
+            }
 
-        if (cardTop < windowHeight - 50) {
-          card.style.opacity = '1';
-          card.style.transform = 'translateY(0)';
-        }
-      });
-    };
+            return data;
+        };
 
-    // Set initial opacity and transform for animation
-    cards.forEach(card => {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(20px)';
-      card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    });
+        const moodData = generateMoodData();
 
-    // Trigger fade in on load and scroll
-    window.addEventListener('load', fadeInCards);
-    window.addEventListener('scroll', fadeInCards);
+        const moodChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Mood Rating',
+                    data: moodData,
+                    backgroundColor: 'rgba(106, 127, 255, 0.2)',
+                    borderColor: 'rgba(106, 127, 255, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(106, 127, 255, 1)',
+                    pointBorderColor: '#fff',
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: 1,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                animation: {
+                    duration: 2000,
+                    easing: 'easeOutQuart'
+                }
+            }
+        });
 
-    // Add hover animation for mood days
-    document.querySelectorAll('.mood-day').forEach(moodDay => {
-      moodDay.addEventListener('mouseenter', function () {
-        this.style.transform = 'scale(1.05)';
-      });
+        // Add click functionality to goal checkboxes
+        document.querySelectorAll('.goal-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('click', function () {
+                this.classList.toggle('completed');
+                this.parentElement.classList.toggle('completed');
 
-      moodDay.addEventListener('mouseleave', function () {
-        this.style.transform = 'scale(1)';
-      });
-    });
+                // Update progress bar
+                const totalGoals = document.querySelectorAll('.goal').length;
+                const completedGoals = document.querySelectorAll('.goal.completed').length;
+                const progressPercent = (completedGoals / totalGoals) * 100;
+
+                document.querySelector('.progress-bar').style.width = progressPercent + '%';
+            });
+        });
+
+        // Add animation to cards on scroll
+        const cards = document.querySelectorAll('.card');
+
+        const fadeInCards = () => {
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+
+                if (cardTop < windowHeight - 50) {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }
+            });
+        };
+
+        // Set initial opacity and transform for animation
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+
+        // Trigger fade in on load and scroll
+        window.addEventListener('load', fadeInCards);
+        window.addEventListener('scroll', fadeInCards);
+
+        // Add hover animation for mood days
+        document.querySelectorAll('.mood-day').forEach(moodDay => {
+            moodDay.addEventListener('mouseenter', function () {
+                this.style.transform = 'scale(1.05)';
+            });
+
+            moodDay.addEventListener('mouseleave', function () {
+                this.style.transform = 'scale(1)';
+            });
+        });
   </script>
   <script>// Get modal elements
     const journalModal = document.getElementById('journalModal');
