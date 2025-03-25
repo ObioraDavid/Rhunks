@@ -129,9 +129,7 @@
 
         textarea.form-input {
             resize: vertical;
-            /* Allow vertical resizing */
             min-height: 100px;
-            /* Set a minimum height */
         }
 
         .login-button {
@@ -169,7 +167,6 @@
             width: 50%;
             z-index: 1;
             position: relative;
-            /* Added to position the arrows relative to this container */
         }
 
         .hero-title {
@@ -200,7 +197,6 @@
             transition: all 0.3s ease;
             animation: fadeInUp 1s ease 0.4s both;
             position: relative;
-            /* Added for positioning context */
         }
 
         .cta-button:hover {
@@ -208,7 +204,6 @@
             box-shadow: 0 7px 20px rgba(106, 127, 255, 0.6);
         }
 
-        /* Added floating message styles */
         .floating-text {
             position: absolute;
             bottom: -40px;
@@ -228,7 +223,6 @@
             z-index: 2;
         }
 
-        /* Added arrow animations */
         .arrow {
             position: absolute;
             width: 30px;
@@ -254,13 +248,10 @@
         }
 
         @keyframes arrowMove1 {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: rotate(45deg) translate(0, 0);
                 opacity: 0.8;
             }
-
             50% {
                 transform: rotate(45deg) translate(10px, 10px);
                 opacity: 1;
@@ -268,13 +259,10 @@
         }
 
         @keyframes arrowMove2 {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: rotate(45deg) translate(0, 0);
                 opacity: 0.8;
             }
-
             50% {
                 transform: rotate(45deg) translate(10px, 10px);
                 opacity: 1;
@@ -406,7 +394,6 @@
             line-height: 1.6;
         }
 
-        /* Modal styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -476,15 +463,6 @@
             color: var(--dark);
         }
 
-        .form-input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
         .form-input:focus {
             outline: none;
             border-color: var(--primary);
@@ -509,6 +487,12 @@
             box-shadow: 0 7px 15px rgba(106, 127, 255, 0.4);
         }
 
+        .form-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
         .form-footer {
             margin-top: 20px;
             text-align: center;
@@ -526,11 +510,9 @@
             0% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.1);
             }
-
             100% {
                 transform: scale(1);
             }
@@ -540,11 +522,9 @@
             0% {
                 transform: translateY(0);
             }
-
             50% {
                 transform: translateY(-20px);
             }
-
             100% {
                 transform: translateY(0);
             }
@@ -555,7 +535,6 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -587,7 +566,6 @@
                 gap: 10px;
             }
 
-            /* Updated arrow positions for mobile */
             .arrow-1 {
                 top: auto;
                 bottom: 90px;
@@ -619,84 +597,37 @@
                 <button class="auth-button signup-button" id="signupBtn">Sign Up</button>
             </div>
         </header>
+
         <!-- Contact Us Modal -->
         <div class="modal-overlay" id="contactModal">
             <div class="modal">
                 <div class="modal-close" id="closeContactModal">×</div>
                 <h2 class="modal-title">Contact Us</h2>
-                <form action="rhunks-38bd5.firebaseapp.com" method="post" id="contactForm">
+                <form id="contactForm">
                     <div class="form-group">
                         <label for="contactName" class="form-label">Your Name</label>
                         <input type="text" id="contactName" class="form-input" placeholder="Enter your name" required>
                     </div>
                     <div class="form-group">
                         <label for="contactEmail" class="form-label">Email Address</label>
-                        <input type="email" id="contactEmail" class="form-input" placeholder="Enter your email"
-                            required>
+                        <input type="email" id="contactEmail" class="form-input" placeholder="Enter your email" required>
                     </div>
                     <div class="form-group">
                         <label for="contactMessage" class="form-label">Message</label>
-                        <textarea id="contactMessage" class="form-input" placeholder="Enter your message" rows="5"
-                            required></textarea>
+                        <textarea id="contactMessage" class="form-input" placeholder="Enter your message" rows="5" required></textarea>
                     </div>
-                    <button type="submit"
-                        onclick="window.location.href='https://mail.google.com/mail/u/0/#inbox?compose=new'"
-                        class="form-button">Send Message</button>
+                    <button type="submit" class="form-button">Send Message</button>
                 </form>
             </div>
         </div>
-        <script>
-            // Get contact modal elements
-            const contactBtn = document.getElementById('contactBtn');
-            const contactModal = document.getElementById('contactModal');
-            const closeContactModal = document.getElementById('closeContactModal');
-            const contactForm = document.getElementById('contactForm');
 
-            // Open contact modal
-            contactBtn.addEventListener('click', function () {
-                contactModal.classList.add('active');
-            });
-
-            // Close contact modal
-            closeContactModal.addEventListener('click', function () {
-                contactModal.classList.remove('active');
-            });
-
-            // Close modal when clicking outside
-            window.addEventListener('click', function (e) {
-                if (e.target === contactModal) {
-                    contactModal.classList.remove('active');
-                }
-            });
-
-            // Handle contact form submission
-            contactForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const name = document.getElementById('contactName').value;
-                const email = document.getElementById('contactEmail').value;
-                const message = document.getElementById('contactMessage').value;
-                // Redirect to 1.html
-                window.location.href = "https://mail.google.com/mail/u/0/#inbox?compose=new";
-
-                // You can add logic to send the message (e.g., via an API)
-                console.log('Contact form submitted:', { name, email, message });
-
-                // Simple feedback
-                alert('Thank you for contacting us! We will get back to you soon.');
-
-                // Reset form and close modal
-                contactForm.reset();
-                contactModal.classList.remove('active');
-            });
-        </script>
         <section class="hero">
             <div class="hero-content">
                 <h1 class="hero-title">Your Mental Health <br>Is Priority</h1>
                 <p class="hero-subtitle">Taking care of your mental wellbeing is just as important as physical health.
                     Begin your journey to a healthier mind today with support that understands you.</p>
                 <a href="mental.html" class="cta-button">Anonymous Chat</a>
-                <p style="font-size: small;">Conversations made here won't be saved or recorded
-                <p>
+                <p style="font-size: small;">Conversations made here won't be saved or recorded</p>
             </div>
 
             <div class="hero-image">
@@ -802,8 +733,7 @@
                 </div>
                 <div class="form-group">
                     <label for="loginPassword" class="form-label">Password</label>
-                    <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password"
-                        required>
+                    <input type="password" id="loginPassword" class="form-input" placeholder="Enter your password" required>
                 </div>
                 <button type="submit" class="form-button">Login</button>
                 <div class="form-footer">
@@ -829,52 +759,214 @@
                 </div>
                 <div class="form-group">
                     <label for="signupPassword" class="form-label">Password</label>
-                    <input type="password" id="signupPassword" class="form-input" placeholder="Create a password"
-                        required>
+                    <input type="password" id="signupPassword" class="form-input" placeholder="Create a password (min 6 characters)" required minlength="6">
                 </div>
                 <div class="form-group">
                     <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
-                    <input type="password" id="signupConfirmPassword" class="form-input"
-                        placeholder="Confirm your password" required>
+                    <input type="password" id="signupConfirmPassword" class="form-input" placeholder="Confirm your password" required minlength="6">
                 </div>
-                <button type="submit" class="form-button">Sign Up</button>
+                <button type="submit" class="form-button" id="signupSubmitBtn">Sign Up</button>
                 <div class="form-footer">
                     Already have an account? <a href="#" id="switchToLogin">Login</a>
                 </div>
             </form>
         </div>
     </div>
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    <script>
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyAGqf47Y7V2zitAFA_56rpz-HQd2fS__bk",
             authDomain: "rhunks-38bd5.firebaseapp.com",
             projectId: "rhunks-38bd5",
-            storageBucket: "rhunks-38bd5.firebasestorage.app",
+            storageBucket: "rhunks-38bd5.appspot.com",
             messagingSenderId: "481907636721",
             appId: "1:481907636721:web:9af72efff4041dc4ffec50",
             measurementId: "G-F7FD0EVH4N"
         };
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-        // Animation for cards on scroll
-        document.addEventListener('DOMContentLoaded', function () {
+        // DOM Elements
+        const contactBtn = document.getElementById('contactBtn');
+        const contactModal = document.getElementById('contactModal');
+        const closeContactModal = document.getElementById('closeContactModal');
+        const contactForm = document.getElementById('contactForm');
+
+        const loginBtn = document.getElementById('loginBtn');
+        const loginModal = document.getElementById('loginModal');
+        const closeLoginModal = document.getElementById('closeLoginModal');
+        const loginForm = document.getElementById('loginForm');
+
+        const signupBtn = document.getElementById('signupBtn');
+        const signupModal = document.getElementById('signupModal');
+        const closeSignupModal = document.getElementById('closeSignupModal');
+        const signupForm = document.getElementById('signupForm');
+        const signupSubmitBtn = document.getElementById('signupSubmitBtn');
+
+        const switchToSignup = document.getElementById('switchToSignup');
+        const switchToLogin = document.getElementById('switchToLogin');
+
+        // Modal Functions
+        function openModal(modal) {
+            modal.classList.add('active');
+        }
+
+        function closeModal(modal) {
+            modal.classList.remove('active');
+        }
+
+        // Event Listeners for Modals
+        contactBtn.addEventListener('click', () => openModal(contactModal));
+        closeContactModal.addEventListener('click', () => closeModal(contactModal));
+
+        loginBtn.addEventListener('click', () => openModal(loginModal));
+        closeLoginModal.addEventListener('click', () => closeModal(loginModal));
+
+        signupBtn.addEventListener('click', () => openModal(signupModal));
+        closeSignupModal.addEventListener('click', () => closeModal(signupModal));
+
+        switchToSignup.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(loginModal);
+            setTimeout(() => openModal(signupModal), 300);
+        });
+
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            closeModal(signupModal);
+            setTimeout(() => openModal(loginModal), 300);
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === contactModal) closeModal(contactModal);
+            if (e.target === loginModal) closeModal(loginModal);
+            if (e.target === signupModal) closeModal(signupModal);
+        });
+
+        // Contact Form Submission
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            // Here you would typically send the data to a server
+            console.log('Contact form submitted:', { name, email, message });
+            alert('Thank you for contacting us! We will get back to you soon.');
+            
+            contactForm.reset();
+            closeModal(contactModal);
+        });
+
+        // Sign Up Form Submission
+        signupForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+
+            // Disable button during processing
+            signupSubmitBtn.disabled = true;
+            signupSubmitBtn.textContent = 'Creating account...';
+
+            try {
+                // Create user with email and password
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Update user profile with name
+                await userCredential.user.updateProfile({
+                    displayName: name
+                });
+
+                alert('Account created successfully! You are now logged in.');
+                closeModal(signupModal);
+                signupForm.reset();
+                
+                // Redirect to dashboard or home page
+                window.location.href = 'Dashboard.html';
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert(getAuthErrorMessage(error));
+            } finally {
+                // Re-enable button
+                signupSubmitBtn.disabled = false;
+                signupSubmitBtn.textContent = 'Sign Up';
+            }
+        });
+
+        // Login Form Submission
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const submitBtn = this.querySelector('.form-button');
+
+            // Disable button during processing
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Logging in...';
+
+            try {
+                // Sign in user
+                await auth.signInWithEmailAndPassword(email, password);
+                
+                alert('Login successful! Redirecting...');
+                closeModal(loginModal);
+                loginForm.reset();
+                
+                // Redirect to dashboard
+                window.location.href = 'Dashboard.html';
+            } catch (error) {
+                console.error('Login error:', error);
+                alert(getAuthErrorMessage(error));
+            } finally {
+                // Re-enable button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Login';
+            }
+        });
+
+        // Helper function for auth error messages
+        function getAuthErrorMessage(error) {
+            switch(error.code) {
+                case 'auth/email-already-in-use':
+                    return 'This email is already registered. Please login instead.';
+                case 'auth/invalid-email':
+                    return 'Please enter a valid email address.';
+                case 'auth/weak-password':
+                    return 'Password should be at least 6 characters.';
+                case 'auth/user-not-found':
+                    return 'No account found with this email.';
+                case 'auth/wrong-password':
+                    return 'Incorrect password. Please try again.';
+                default:
+                    return error.message || 'Authentication failed. Please try again.';
+            }
+        }
+
+        // Card Animation on Scroll
+        document.addEventListener('DOMContentLoaded', function() {
             const cards = document.querySelectorAll('.card');
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('fade-in');
-                        // Add a slight delay for each card
                         const index = Array.from(cards).indexOf(entry.target);
                         entry.target.style.transitionDelay = `${index * 0.2}s`;
                     }
@@ -884,215 +976,18 @@
             cards.forEach(card => {
                 observer.observe(card);
             });
-
-            // Modal functionality
-            const loginBtn = document.getElementById('loginBtn');
-            const signupBtn = document.getElementById('signupBtn');
-            const loginModal = document.getElementById('loginModal');
-            const signupModal = document.getElementById('signupModal');
-            const closeLoginModal = document.getElementById('closeLoginModal');
-            const closeSignupModal = document.getElementById('closeSignupModal');
-            const switchToSignup = document.getElementById('switchToSignup');
-            const switchToLogin = document.getElementById('switchToLogin');
-            const loginForm = document.getElementById('loginForm');
-            const signupForm = document.getElementById('signupForm');
-
-            // Open login modal
-            loginBtn.addEventListener('click', function () {
-                loginModal.classList.add('active');
-            });
-
-            // Open signup modal
-            signupBtn.addEventListener('click', function () {
-                signupModal.classList.add('active');
-            });
-
-            // Close login modal
-            closeLoginModal.addEventListener('click', function () {
-                loginModal.classList.remove('active');
-            });
-
-            // Close signup modal
-            closeSignupModal.addEventListener('click', function () {
-                signupModal.classList.remove('active');
-            });
-
-            // Switch to signup modal
-            switchToSignup.addEventListener('click', function (e) {
-                e.preventDefault();
-                loginModal.classList.remove('active');
-                setTimeout(() => {
-                    signupModal.classList.add('active');
-                }, 300);
-            });
-
-            // Switch to login modal
-            switchToLogin.addEventListener('click', function (e) {
-                e.preventDefault();
-                signupModal.classList.remove('active');
-                setTimeout(() => {
-                    loginModal.classList.add('active');
-                }, 300);
-            });
-
-            // Close modals when clicking outside
-            window.addEventListener('click', function (e) {
-                if (e.target === loginModal) {
-                    loginModal.classList.remove('active');
-                }
-                if (e.target === signupModal) {
-                    signupModal.classList.remove('active');
-                }
-            });
-
-            // Handle login form submission
-            loginForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                const email = document.getElementById('loginEmail').value;
-                const password = document.getElementById('loginPassword').value;
-
-                const auth = getAuth();
-                signInWithEmailAndPassword(auth, email, password)
-                    .then((userCredential) => {
-                        // Signed in 
-                        const user = userCredential.user;
-
-                        // ...
-                        // Simple validation feedback
-                        alert('Login successful! Redirecting to dashboard...');
-
-                        // Reset form and close modal
-                        loginForm.reset();
-                        loginModal.classList.remove('active');
-
-                        localStorage.setItem('user', JSON.stringify(user));
-
-                        // Redirect to 1.html
-                        window.location.href = `Dashboard.html`;
-                    })
-                    .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                    });
-            });
-
-            // Handle signup form submission
-            signupForm.addEventListener('submit', function (e) {
-                const submitBtn = document.querySelector('signupForm .form-button');
-                console.log(submitBtn);
-                
-                submitBtn.disabled = true;
-                e.preventDefault();
-                const name = document.getElementById('signupName').value;
-                const email = document.getElementById('signupEmail').value;
-                const password = document.getElementById('signupPassword').value;
-                const confirmPassword = document.getElementById('signupConfirmPassword').value;
-
-                // Simple password validation
-                if (password !== confirmPassword) {
-                    alert('Passwords do not match!');
-                    return;
-                }
-
-                const auth = getAuth();
-                createUserWithEmailAndPassword(auth, email, confirmPassword)
-                    .then((userCredential) => {
-                        // Signed up 
-                        const user = userCredential.user;
-                        console.log(user)
-                        alert('Account created successfully!');
-
-                        // Reset form and close modal
-                        signupForm.reset();
-                        signupModal.classList.remove('active');
-                    })
-                    .catch((error) => {
-                        const errorCode = error.code;
-                        const errorMessage = error.message;
-                        // ..
-                    });
-
-                submitBtn.disabled = false;
-            });
         });
 
-        // Particles animation for background
-        class Particle {
-            constructor(canvas) {
-                this.canvas = canvas;
-                this.ctx = canvas.getContext('2d');
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 5 + 1;
-                this.speedX = Math.random() * 3 - 1.5;
-                this.speedY = Math.random() * 3 - 1.5;
-                this.color = this.getRandomColor();
+        // Auth State Listener
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log('User is logged in:', user);
+                // Update UI for logged in user if needed
+            } else {
+                console.log('User is logged out');
+                // Update UI for logged out user if needed
             }
-
-            getRandomColor() {
-                const colors = ['rgba(106, 127, 255, 0.5)', 'rgba(127, 255, 212, 0.5)', 'rgba(255, 127, 167, 0.5)'];
-                return colors[Math.floor(Math.random() * colors.length)];
-            }
-
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                if (this.size > 0.2) this.size -= 0.05;
-
-                if (this.x > this.canvas.width || this.x < 0) {
-                    this.speedX = -this.speedX;
-                }
-
-                if (this.y > this.canvas.height || this.y < 0) {
-                    this.speedY = -this.speedY;
-                }
-            }
-
-            draw() {
-                this.ctx.fillStyle = this.color;
-                this.ctx.beginPath();
-                this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                this.ctx.fill();
-            }
-        }
-
-        // Create particles canvas
-        const particlesCanvas = document.createElement('canvas');
-        particlesCanvas.width = window.innerWidth;
-        particlesCanvas.height = window.innerHeight;
-        particlesCanvas.style.position = 'fixed';
-        particlesCanvas.style.top = '0';
-        particlesCanvas.style.left = '0';
-        particlesCanvas.style.zIndex = '-1';
-        particlesCanvas.style.opacity = '0.5';
-        document.body.appendChild(particlesCanvas);
-
-        const ctx = particlesCanvas.getContext('2d');
-        const particles = [];
-
-        for (let i = 0; i < 50; i++) {
-            particles.push(new Particle(particlesCanvas));
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
-
-            for (let i = 0; i < particles.length; i++) {
-                particles[i].update();
-                particles[i].draw();
-            }
-
-            requestAnimationFrame(animateParticles);
-        }
-
-        animateParticles();
-
-        window.addEventListener('resize', function () {
-            particlesCanvas.width = window.innerWidth;
-            particlesCanvas.height = window.innerHeight;
         });
     </script>
 </body>
-
 </html>
